@@ -45,7 +45,7 @@ class SimulatorFrame < Wx::Frame
   
   def criar_panel_memoria(parent)
     panel_memoria = Wx::Panel.new(parent)
-    sizer = Wx::BoxSizer.new(Wx::VERTICAL)
+    sizer =  Wx::FlexGridSizer.new(2,2,10,10)
     panel_memoria.set_sizer(sizer)
 
     titulo = Wx::StaticText.new(panel_memoria,-1,"Hierarquia de Memoria")
@@ -53,16 +53,20 @@ class SimulatorFrame < Wx::Frame
     sizer.add(titulo,0,Wx::ALIGN_CENTER,0)
     
     @my_label = Wx::StaticText.new(panel_memoria, -1, 'My Label Text',Wx::DEFAULT_POSITION, Wx::DEFAULT_SIZE, Wx::ALIGN_CENTER)
+	 label_mem =  Wx::StaticText.new(panel_memoria, -1, 'Memória principal',Wx::DEFAULT_POSITION, Wx::DEFAULT_SIZE, Wx::ALIGN_CENTER)
     @my_button = Wx::Button.new(panel_memoria, -1, 'My Button Text')
     @my_grid = Wx::Grid.new(panel_memoria)
     
-    @my_grid.create_grid(1,1)
+    @my_grid.create_grid(20,1)
     @my_grid.set_col_label_value(0,'Valor')
-    @my_grid.set_margins(100,400)
+    @my_grid.set_default_col_size(100,true)
+	 @my_grid.set_margins(15,0)
+	 @my_grid.set_default_cell_alignment(Wx::ALIGN_CENTRE,Wx::ALIGN_CENTRE)
 
     sizer.add(@my_label, 0, Wx::GROW|Wx::ALL, 2)
+    sizer.add(label_mem, 0, Wx::ALIGN_RIGHT, 2)
     sizer.add(@my_button,0, Wx::GROW|Wx::ALL, 2)
-    sizer.add(@my_grid, 0, Wx::GROW|Wx::ALL, 2)
+    sizer.add(@my_grid, 0, Wx::ALIGN_RIGHT, 2)
 
     return panel_memoria
   end
@@ -122,10 +126,13 @@ class SimulatorFrame < Wx::Frame
 
   def on_button_click(event)
     @my_label.set_label(@teste.to_s)
-    @my_grid.append_rows()
+    #@my_grid.append_rows()
     @my_grid.set_read_only(@teste,0)
     @my_grid.set_cell_value(@teste,0,"valor #{@teste+1}")
     @teste += 1
+	 if (@teste % 20 == 0)
+	   @my_grid.insert_rows(@teste, 20)
+	 end
   end
 
   def on_quit(event)
