@@ -13,18 +13,30 @@ class SimulatorFrame < Wx::Frame
 
     panel_main = Wx::Panel.new(self)
     # Layout
-    sizer_panel_main = Wx::FlexGridSizer.new(2,2,10,10)
-    sizer_panel_main.add_growable_col(1,1) # mescla as celulas da 2a coluna
+    sizer_panel_main = Wx::GridSizer.new(1,2,0,0)
+#    sizer_panel_main = Wx::FlexGridSizer.new(2,2,10,10)
+#    sizer_panel_main.add_growable_col(1,1) # mescla as celulas da 2a coluna
     panel_main.set_sizer(sizer_panel_main)
+
+    panel1 = Wx::Panel.new(panel_main)
+    sizer1 = Wx::GridSizer.new(2,1,0,0)
+    panel1.set_sizer(sizer1)
+
+    panel2 = Wx::Panel.new(panel_main)
+    sizer2 = Wx::BoxSizer.new(Wx::VERTICAL)
+    panel2.set_sizer(sizer2)
 
     panel_IO = criar_panel_IO(panel_main)
     panel_memoria = criar_panel_memoria(panel_main)
     panel_processador = criar_panel_processador(panel_main)
+    
+    sizer1.add(panel_IO,2,Wx::ALIGN_CENTER,20)
+    sizer1.add(panel_processador,2,Wx::ALIGN_CENTER,20)
+    sizer2.add(panel_memoria)
 
-    sizer_panel_main.add(panel_IO, 0, Wx::GROW|Wx::ALL, 2)
-    sizer_panel_main.add(panel_memoria,0, Wx::GROW|Wx::ALL, 2)
-    sizer_panel_main.add(panel_processador, 0, Wx::GROW|Wx::ALL, 2)
-
+    sizer_panel_main.add(sizer1,2,Wx::ALIGN_CENTER,20)
+    sizer_panel_main.add(sizer2,2,Wx::ALIGN_CENTER,20)
+    
     barra_menu()
     criar_eventos()
 
@@ -37,12 +49,27 @@ class SimulatorFrame < Wx::Frame
     panel_IO.set_sizer(sizer)
 
     titulo = Wx::StaticText.new(panel_IO,-1,"I/O")
-    teste = Wx::TextCtrl.new(panel_IO,-1, "", Wx::DEFAULT_POSITION, Wx::Size.new(300,300))
+    teste = Wx::TextCtrl.new(panel_IO,-1, "", Wx::DEFAULT_POSITION, Wx::Size.new(300,250))
 
-    sizer.add(teste,0,Wx::ALIGN_CENTER,0)
     sizer.add(titulo,0,Wx::ALIGN_CENTER,0)
+    sizer.add(teste,0,Wx::ALIGN_CENTER,0)
 
     return panel_IO
+  end
+  
+  def criar_panel_processador(parent)
+    panel_processador = Wx::Panel.new(parent)
+    sizer = Wx::BoxSizer.new(Wx::VERTICAL)
+    panel_processador.set_sizer(sizer)
+
+    titulo = Wx::StaticText.new(panel_processador,-1,"Processador")
+    teste = Wx::TextCtrl.new(panel_processador,-1, "", Wx::DEFAULT_POSITION, Wx::Size.new(300,250))
+
+    sizer.add(titulo,0,Wx::ALIGN_CENTER,0)
+    sizer.add(teste,0,Wx::ALIGN_CENTER,0)
+
+
+    return panel_processador
   end
   
   def criar_panel_memoria(parent)
@@ -53,7 +80,7 @@ class SimulatorFrame < Wx::Frame
 
     
     titulo = Wx::StaticText.new(panel_memoria,-1,"Hierarquia de Memoria")
-    @my_label = Wx::StaticText.new(panel_memoria, -1, 'Aqui sera a memoria cache',Wx::DEFAULT_POSITION, Wx::DEFAULT_SIZE, Wx::ALIGN_CENTER)
+    #@my_label = Wx::StaticText.new(panel_memoria, -1, 'Aqui sera a memoria cache',Wx::DEFAULT_POSITION, Wx::Size.new(150,150), Wx::ALIGN_CENTER)
 	 label_mem =  Wx::StaticText.new(panel_memoria, -1, 'Memória principal',Wx::DEFAULT_POSITION, Wx::DEFAULT_SIZE, Wx::ALIGN_CENTER)
     @my_button = Wx::Button.new(panel_memoria, -1, 'My Button Text')
     @my_grid = Wx::Grid.new(panel_memoria)
@@ -65,29 +92,14 @@ class SimulatorFrame < Wx::Frame
     @my_grid.set_default_cell_alignment(Wx::ALIGN_CENTRE,Wx::ALIGN_CENTRE)
 
     sizer.add(titulo,0,Wx::GROW|Wx::ALL,0)
-    sizer.add(nil,0,Wx::GROW|Wx::ALL,0)
-    sizer.add(@my_button,0, Wx::GROW|Wx::ALL, 2)
     sizer.add(label_mem, 0, Wx::GROW|Wx::ALL, 2)
-    sizer.add(@my_label, 0, Wx::GROW|Wx::ALL, 2)
+    sizer.add(@my_button,0, Wx::GROW|Wx::ALL, 2)
     sizer.add(@my_grid, 0, Wx::GROW|Wx::ALL, 2)
+    #sizer.add(@my_label, 0, Wx::GROW|Wx::ALL, 2)
 
     return panel_memoria
   end
   
-  def criar_panel_processador(parent)
-    panel_processador = Wx::Panel.new(parent)
-    sizer = Wx::BoxSizer.new(Wx::VERTICAL)
-    panel_processador.set_sizer(sizer)
-
-    titulo = Wx::StaticText.new(panel_processador,-1,"Processador")
-    teste = Wx::TextCtrl.new(panel_processador,-1, "", Wx::DEFAULT_POSITION, Wx::Size.new(300,300))
-
-    sizer.add(teste,0,Wx::ALIGN_CENTER,0)
-
-    sizer.add(titulo,0,Wx::ALIGN_CENTER,0)
-
-    return panel_processador
-  end
 
   def barra_menu()
     # Cria o menu arquivo
@@ -131,7 +143,7 @@ class SimulatorFrame < Wx::Frame
   end
 
   def on_button_click(event)
-    @my_label.set_label(@teste.to_s)
+    #@my_label.set_label(@teste.to_s)
     #@my_grid.append_rows()
     @my_grid.set_read_only(@teste,0)
     @my_grid.set_cell_value(@teste,0,"valor #{@teste+1}")
