@@ -9,12 +9,15 @@ end
 sigmap = SignalHandler.new  
   
 Gtk.init  
-glade = GladeXML.new('gui_simulador.glade', nil, 'simuladorglade')  
+glade = GladeXML.new('layout.glade', nil, 'simulador')  
 window = glade['simulador_window']
+glade.signal_autoconnect_full { |source, target, signal, handler, data, after| puts "#{handler} enviou o sinal: #{signal}" }
 
 # -- Labels --
 rg_ax = glade['rg_ax']
 rg_ax.text = "1001"
+bus_end_p_mem = glade['bus_end_p_mem']
+bus_end_p_mem.text = "1001100110011001"
 # -- Fim Labels -- 
 
 # ---- Eventos ----
