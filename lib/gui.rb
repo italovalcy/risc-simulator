@@ -3,7 +3,7 @@ require 'libglade2'
 
 class Simulador
   def initialize()
-    @@made_clock = false
+    @made_clock = false
 
     Gtk.init
     @@glade = GladeXML.new('layout.glade', nil, 'simulador')  
@@ -26,7 +26,7 @@ class Simulador
     @@glade['btn_input_net'].signal_connect( "clicked" ) { input_net() }
     @@glade['btn_input_key'].signal_connect( "clicked" ) { input_key() }
     @@glade['btn_iniciar'].signal_connect("clicked") { iniciar_simulacao() }
-    @@glade['btn_clock'].signal_connect("clicked") { @@made_clock = true }
+    @@glade['btn_clock'].signal_connect("clicked") { @made_clock = true }
     
     # Cria os dialogs
     ajuda_sobre = @@glade['sobre_dialog']
@@ -69,12 +69,23 @@ class Simulador
     return @@glade["bus_#{bus}_p_io"].text
   end
 
-  def Simulador.made_clock?
-    return @@made_clock
+  def Simulador.wait_clock
+    if (automatic_clock?)
+      sleep 1
+    elsif
+      while (!made_clock?)
+        # Waiting for clock event
+      end
+      made_clock = false
+    end
+  end
+  
+  def made_clock?
+    return @made_clock
   end
 
-  def Simulador.set_made_clock(x)
-    @@made_clock = x
+  def set_made_clock(x)
+    @made_clock = x
   end
 
   def Simulador.automatic_clock?
