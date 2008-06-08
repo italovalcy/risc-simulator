@@ -27,19 +27,19 @@ class Simulador
     @@glade['btn_input_key'].signal_connect( "clicked" ) { input_key() }
     @@glade['btn_iniciar'].signal_connect("clicked") { iniciar_simulacao() }
     @@glade['btn_clock'].signal_connect("clicked") { @made_clock = true }
-    
-    # Cria os dialogs
-    ajuda_sobre = @@glade['sobre_dialog']
-    editar_pref = @@glade['editar_pref']
-    mem_config = @@glade['mem_config']
-    
-    @@glade['ajuda_sobre'].signal_connect("activate") { @@glade['sobre_dialog'].visible = true }
-    editar_pref.signal_connect("activate") { @@glade['pref_dialog'].show }
-    mem_config.signal_connect('activate') { @@glade['abrir_mem_arq'].show }
-    # Destroi os dialogs
-    #@@glade['sobre_dialog'].signal_connect("close") { @@glade['sobre_dialog'].visible = false }  
-#    @@glade['btn_fechar_pref'].signal_connect('clicked') { editar_pref.close }
-#    @@glade['btn_cancel_mem_arq'].signal_connect('clicked') { mem_config.close }
+
+    # Torna os dialogs visiveis ao serem chamados
+    @@glade['mem_config'].signal_connect("activate") { @@glade['abrir_mem_arq'].show }
+    @@glade['ajuda_sobre'].signal_connect("activate") { @@glade['sobre_dialog'].show }
+    @@glade['editar_pref'].signal_connect("activate") { @@glade['pref_dialog'].show }
+
+    # Oculta os dialogs ao serem fechados
+    @@glade['sobre_dialog'].signal_connect("delete_event") { @@glade['sobre_dialog'].hide }
+    @@glade['sobre_dialog'].signal_connect("close") { @@glade['sobre_dialog'].hide }
+    @@glade['pref_dialog'].signal_connect("delete_event") { @@glade['pref_dialog'].hide }
+    @@glade['btn_fechar_pref'].signal_connect("clicked") { @@glade['pref_dialog'].hide }
+    @@glade['abrir_mem_arq'].signal_connect("delete_event") { @@glade['abrir_mem_arq'].hide }
+    @@glade['btn_cancel_mem_arq'].signal_connect("clicked") { @@glade['abrir_mem_arq'].hide }
   end
 
 
