@@ -35,7 +35,7 @@ class Simulador
 
     # Oculta os dialogs ao serem fechados
     @@glade['sobre_dialog'].signal_connect("delete_event") { @@glade['sobre_dialog'].hide }
-    @@glade['sobre_dialog'].signal_connect("close") { @@glade['sobre_dialog'].hide }
+    @@glade['sobre_dialog'].signal_connect("response") { |s,r| if (r==Gtk::Dialog::RESPONSE_CANCEL); s.hide; end }
     @@glade['pref_dialog'].signal_connect("delete_event") { @@glade['pref_dialog'].hide }
     @@glade['btn_fechar_pref'].signal_connect("clicked") { @@glade['pref_dialog'].hide }
     @@glade['abrir_mem_arq'].signal_connect("delete_event") { @@glade['abrir_mem_arq'].hide }
