@@ -153,13 +153,45 @@ class Processador
           set_ip(@value_op1)
         end
       when '1100' # AND
+        @result_op = @value_op1 and @value_op2
       when '1101' # OR
+        @result_op = @value_op1 or @value_op2
       when '1110' # CMP
+        flags = convert_to_bin(Simulador.get_value_rg("flags"),16)
+        if (@value_op1 == @value_op2)
+          flags[14..15] = '00'
+        elsif (@value_op1 > @value_op2)
+          flags[14..15] = '01'
+        else
+          flags[14..15] = '10'
+        end
+        @result_op = flags.to_i(2)
       when '1111' # HLT
+        @had_hlt_instruction = true
     end
   end
 
   def save
+    cod_reg = {"0000"=>"ax", "0001"=>"bx", "0010"=>"cx", "0011"=>"dx"}
     get_clock()
+    case @op_code
+      when '0001' # MOV
+        case @t_op1
+          when "01" # Register
+            Simulador.set_value_rg(cod_reg[@id_op1],@result_op)
+          when "11" # Memory
+            Memoria.set_value(@id_op2,@result_op)
+        end
+      when '0010', '0011', '0100', '0101', '1100', '1101' # ADD, SUB, INC, DEC, AND, OR
+        Simulador.set_value_rg(cod_reg[@id_op1], @result_op)
+      when '0110' # IN
+      when '0111' # OUT
+      when '1000' # JMP
+        set_ip(@value_op1)
+      when '1001', '1010', '1011', '1110' # JG, JE, JL, CMP
+        # Nada a ser feito
+      when '1111' # HLT
+        # Nada a ser feito
+    end
   end
 end

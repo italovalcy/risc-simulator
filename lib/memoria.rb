@@ -9,4 +9,8 @@ class Memoria
   def Memoria.get_value(address, qtd)
     # TODO
   end
+
+  # Armazena o valor de value na memoria no endereco address
+  def Memoria.set_value(address, value)
+  end
 end

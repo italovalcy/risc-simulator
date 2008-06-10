@@ -105,6 +105,3 @@ class Simulador
     puts "Evento gerando pelo Teclado..."
   end
 end
-
-w = Simulador.new
-w.show
