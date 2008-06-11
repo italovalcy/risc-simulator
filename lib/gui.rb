@@ -104,6 +104,17 @@ class Simulador
     return true
   end
 
+  def get_value_memoria(address,qtd)
+    b = []
+    for i in 0..qtd-1
+      iter = @@glade['gridview_mem'].get_iter("#{address + i}")
+      b.push iter[1]
+    end
+    return b
+  end
+
+  def get_value_cache(address,)
+
   # Insere valores numa treeview
   # Entrada:
   #   view - a treeview onde deseja-se inserir os valores
@@ -167,22 +178,12 @@ class Simulador
     return @@glade["rg_#{reg}"].text
   end
 
-
-  def Simulador.set_value_bus_mem(bus,value)
-    @@glade["bus_#{bus}_p_mem"].text = value
+  def Simulador.set_value_bus(type,bus,value)
+    @@glade["bus_#{bus}_p_#{type}"].text = value
   end
 
-  def Simulador.get_value_bus_mem(bus)
-    return @@glade["bus_#{bus}_p_mem"].text
-  end
-
-
-  def Simulador.set_value_bus_io(bus,value)
-    @@glade["bus_#{bus}_p_io"].text = value
-  end
-
-  def Simulador.get_value_bus_io(bus)
-    return @@glade["bus_#{bus}_p_io"].text
+  def Simulador.get_value_bus(type,bus)
+    return @@glade["bus_#{bus}_p_#{type}"].text
   end
 
   def Simulador.wait_clock
