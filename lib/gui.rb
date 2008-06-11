@@ -83,8 +83,8 @@ class Simulador
 
   def initialize_bus()
     ['end','con','data'].each do |type|
-      Simulador.set_value_bus_mem(type,"0")
-      Simulador.set_value_bus_io(type,"0")
+      Simulador.set_value_bus("mem",type,"0")
+      Simulador.set_value_bus("io",type,"0")
     end
   end
 
@@ -113,7 +113,8 @@ class Simulador
     return b
   end
 
-  def get_value_cache(address,)
+  def get_value_cache()
+  end
 
   # Insere valores numa treeview
   # Entrada:
