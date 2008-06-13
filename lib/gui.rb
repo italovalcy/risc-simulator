@@ -84,6 +84,11 @@ class Simulador
     @@glade['cache_size'].active = 0
     @@glade['io_size'].value = @tam_io
     @@glade['mem_size'].value = @tam_mem
+    @@glade['sleep_clock'].value = 1
+    buffer = Gtk::TextBuffer.new
+    buffer.text = ""
+    @@glade['txt_ula'].buffer = buffer
+    @@glade['txt_ula'].editable = false
   end
 
   def initialize_registers()
@@ -193,6 +198,14 @@ class Simulador
     return @@glade["bus_#{bus}_p_#{type}"].text
   end
 
+  def Simulador.get_sleep_clock
+    return @@glade['sleep_clock'].text.to_i
+  end
+
+  def Simulador.set_log_ula(value)
+    @@glade['txt_ula'].buffer.text = value
+  end
+
   def made_clock
     if (@thread_proc != nil )
       @thread_proc.run
@@ -217,10 +230,10 @@ class Simulador
     @@glade['mem_config'].sensitive = false
     @@glade['io_config'].sensitive = false
     @@glade['editar_pref'].sensitive = false
+    @@glade['txt_ula'].buffer.text = ""
     @thread_proc = Thread.new do
       initialize_registers()
       initialize_bus()
-      puts "Simulacao iniciada..."
       p = Processador.new
       p.start
       finaliza_simulacao()
