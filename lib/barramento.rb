@@ -12,18 +12,29 @@ class Barramento
   #   address - Endereço que deseja-se ler
   # Retorno:
   #   Valor contido em address
-  def read(type,address)
+  def Barramento.read(type,address)
     Simulador.set_value_bus(type,"con","1")
     Simulador.set_value_bus(type,"end",address)
-    value = Memoria.get_value(address,1)
+    case type
+    when 'mem'
+      value = Memoria.get_value(address,1)
+    when 'io'
+      # TODO
+    end
     Simulador.set_value_bus(type,"data",value)
+    Simulador.set_value_bus(type,"con","0")
     return value
   end
 
-  def write(type,address,value)
+  def Barramento.write(type,address,value)
     Simulador.set_value_bus(type,"con","2")
     Simulador.set_value_bus(type,"end",address)
     Simulador.set_value_bus(type,"data",value)
-    Memoria.set_value(address,value)
+    case type
+    when 'mem'
+      Memoria.set_value(address,value)
+    when 'io'
+      # TODO
+    end
   end
 end

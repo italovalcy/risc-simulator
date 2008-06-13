@@ -1,6 +1,7 @@
 require 'gtk2'  
 require 'libglade2'
 require 'arquivo'
+require 'processador'
 
 class Simulador
   def initialize()
@@ -8,6 +9,7 @@ class Simulador
     @tam_mem = 64
     @tam_cache = 16
     @tam_io = 64
+    @thread_proc = nil
     # t_config define onde serao aplicadas
     # as configuracoes que um determinado arquivo
     # traz. Seus valores possíveis são: 'mem', 'io'
@@ -16,6 +18,7 @@ class Simulador
     Gtk.init
     @@glade = GladeXML.new('layout.glade', nil, 'simulador')  
     window = @@glade['simulador_window']
+    initializa_configs()
     make_gridview(@@glade['gridview_cache'],@tam_cache)
     make_gridview(@@glade['gridview_mem'],@tam_mem)
     make_gridview(@@glade['gridview_io'],@tam_io)
@@ -75,6 +78,14 @@ class Simulador
     return tam_new
   end
 
+  def initializa_configs
+    # Configura valores defaults
+    @@glade['clock_type'].active = 0
+    @@glade['cache_size'].active = 0
+    @@glade['io_size'].value = @tam_io
+    @@glade['mem_size'].value = @tam_mem
+  end
+
   def initialize_registers()
     ['ax','bx','cx','dx','flags','ip','ri'].each do |rg|
       Simulador.set_value_rg(rg,"0")
@@ -104,13 +115,10 @@ class Simulador
     return true
   end
 
-  def get_value_memoria(address,qtd)
-    b = []
-    for i in 0..qtd-1
-      iter = @@glade['gridview_mem'].get_iter("#{address + i}")
-      b.push iter[1]
-    end
-    return b
+  def Simulador.get_value_memoria(address)
+    model = @@glade['gridview_mem'].model
+    iter = model.get_iter("#{address}")
+    return iter[1]
   end
 
   def get_value_cache()
@@ -128,15 +136,17 @@ class Simulador
 
   def set_events
     @@glade['simulador_window'].signal_connect("destroy") { Gtk.main_quit }  
+    @@glade['btn_sair'].signal_connect("activate") { Gtk.main_quit }  
     @@glade['btn_input_hd'].signal_connect( "clicked" ) { input_hd() }
     @@glade['btn_input_net'].signal_connect( "clicked" ) { input_net() }
     @@glade['btn_input_key'].signal_connect( "clicked" ) { input_key() }
     @@glade['btn_iniciar'].signal_connect("clicked") { iniciar_simulacao() }
+    @@glade['btn_stop'].signal_connect("clicked") { finaliza_simulacao() }
     @@glade['btn_abrir_arq'].signal_connect("clicked") do
       carregar_arq(@@glade['abrir_arq'],@@glade["gridview_#{@t_config}"])
       @@glade['abrir_arq'].hide
     end
-    @@glade['btn_clock'].signal_connect("clicked") { @made_clock = true }
+    @@glade['btn_clock'].signal_connect("clicked") { made_clock() }
     @@glade['btn_clear'].signal_connect("clicked") { initialize_registers(); initialize_bus() }
 
     # Torna os dialogs visiveis ao serem chamados
@@ -152,10 +162,6 @@ class Simulador
     @@glade['btn_fechar_pref'].signal_connect("clicked") { event_fechar_pref() }
     @@glade['abrir_arq'].signal_connect("delete_event") { @@glade['abrir_arq'].hide; @t_config = '' }
     @@glade['btn_cancel_arq'].signal_connect("clicked") { @@glade['abrir_arq'].hide; @t_config = '' }
-
-    # Configura valores defaults
-    @@glade['clock_type'].active = 0
-    @@glade['cache_size'].active = 0
   end
 
   def event_fechar_pref
@@ -172,7 +178,7 @@ class Simulador
   end
 
   def Simulador.set_value_rg(reg,value)
-    @@glade["rg_#{reg}"].text = value
+    @@glade["rg_#{reg}"].text = value.to_s
   end
 
   def Simulador.get_value_rg(reg)
@@ -180,40 +186,58 @@ class Simulador
   end
 
   def Simulador.set_value_bus(type,bus,value)
-    @@glade["bus_#{bus}_p_#{type}"].text = value
+    @@glade["bus_#{bus}_p_#{type}"].text = value.to_s
   end
 
   def Simulador.get_value_bus(type,bus)
     return @@glade["bus_#{bus}_p_#{type}"].text
   end
 
-  def Simulador.wait_clock
-    if (automatic_clock?)
-      sleep 1
-    elsif
-      while (!made_clock?)
-        # Waiting for clock event
-      end
-      made_clock = false
+  def made_clock
+    if (@thread_proc != nil )
+      @thread_proc.run
     end
   end
   
-  def made_clock?
-    return @made_clock
-  end
-
   def set_made_clock(x)
     @made_clock = x
   end
 
   def Simulador.automatic_clock?
-    return @@glade['clock_type'].get_active_text == "Automatico"
+    return @@glade['clock_type'].active_text == "Automatico"
   end
 
   def iniciar_simulacao
-    initialize_registers()
-    initialize_bus()
-    puts "Simulacao iniciada..."
+    if (@@glade['clock_type'].active_text == "Manual")
+      @@glade['btn_clock'].sensitive = true
+    end
+    @@glade['btn_stop'].sensitive = true
+    @@glade['btn_clear'].sensitive = false
+    @@glade['btn_iniciar'].sensitive = false
+    @@glade['mem_config'].sensitive = false
+    @@glade['io_config'].sensitive = false
+    @@glade['editar_pref'].sensitive = false
+    @thread_proc = Thread.new do
+      initialize_registers()
+      initialize_bus()
+      puts "Simulacao iniciada..."
+      p = Processador.new
+      p.start
+      finaliza_simulacao()
+    end
+  end
+
+  def finaliza_simulacao
+    @@glade['btn_clear'].sensitive = true
+    @@glade['btn_iniciar'].sensitive = true
+    @@glade['mem_config'].sensitive = true
+    @@glade['io_config'].sensitive = true
+    @@glade['editar_pref'].sensitive = true
+    @@glade['btn_stop'].sensitive = false
+    @@glade['btn_clock'].sensitive = false
+    if (@thread_proc != nil )
+      @thread_proc.kill
+    end
   end
 
   def input_hd

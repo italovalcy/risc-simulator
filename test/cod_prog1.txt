@@ -1,0 +1,4 @@
+MOV Ax, 8
+MOV Bx, 32
+ADD Ax, Bx
+HLT

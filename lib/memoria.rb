@@ -7,7 +7,7 @@ class Memoria
   #   qtd - quantidade de registros que deve ser lidos a 
   #         partir de address
   def Memoria.get_value(address, qtd)
-    # TODO
+    return Simulador.get_value_memoria(address)
   end
 
   # Armazena o valor de value na memoria no endereco address

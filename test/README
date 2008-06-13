@@ -1,0 +1,3 @@
+---+ Testes
+
+Para cada arquivo contendo testes com valores de programas que povoam a memoria, existe um arquivo com o mesmo código em assembler.
