@@ -1,0 +1,11 @@
+MOV Cx,3
+MOV Ax,0
+MOV Dx,9
+CMP Ax,Cx
+JG Dx
+MOV Bx,0
+INC Bx
+ADD Ax,Bx
+MOV Dx,3
+JMP Cx
+HLT
