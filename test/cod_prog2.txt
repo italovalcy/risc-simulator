@@ -7,5 +7,5 @@ MOV Bx,0
 INC Bx
 ADD Ax,Bx
 MOV Dx,3
-JMP Cx
+JMP Dx
 HLT
