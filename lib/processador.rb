@@ -109,63 +109,40 @@ class Processador
             @value_op2 = Barramento.read("mem",@id_op2).to_i
             log_op2 = "Op2: [#{@id_op2}]"
         end
-      when '0010', '0011', '1100', '1101' # ADD, SUB, AND, OR
-        get_clock()
-        @value_op1 = Simulador.get_value_rg(cod_reg[@id_op1]).to_i
-        log_op1 = "Op1: #{cod_reg[@id_op1]}"
-        case @t_op2
-          when "01" # Register
-            @value_op2 = Simulador.get_value_rg(cod_reg[@id_op2]).to_i
-            log_op2 = "Op2: #{cod_reg[@id_op2]}"
-          when "10" # Value
-            @value_op2 = @id_op2.to_i(2)
-            log_op2 = "Op2: #{@value_op2}"
-        end
-      when '0100', '0101' # INC, DEC
-        get_clock()
-        @value_op1 = Simulador.get_value_rg(cod_reg[@id_op1]).to_i
-        log_op1 = "Op1: #{cod_reg[@id_op1]}"
-      when '0110' # IN
-        get_clock()
-        log_op1 = "Op1: #{cod_reg[@id_op1]}"
-        address = get_ip(1)
-        @id_op2 = Barramento.read("mem",address).to_i
-        @value_op2 = Barramento.read("io",@id_op2).to_i
-        log_op2 = "Op2: [#{@id_op2}]"
-      when '0111' # OUT
-        get_clock()
-        address = get_ip(1)
-        @id_op1 = Barramento.read("mem",address).to_i
-        log_op1 = "Op1: [#{@id_op1}]"
-        case @t_op2
-          when "01" # Register
-            @value_op2 = Simulador.get_value_rg(cod_reg[@id_op2]).to_i
-            log_op2 = "Op2: #{cod_reg[@id_op2]}"
-          when "10" # Value
-            @value_op2 = @id_op2.to_i(2)
-            log_op2 = "Op2: #{@value_op2}"
-        end
-      when '1000', '1001', '1010', '1011' # JMP, JG, JE, JL
-        get_clock()
-        @value_op1 = Simulador.get_value_rg(cod_reg[@id_op1]).to_i
-        log_op1 = "Op1: #{cod_reg[@id_op1]}"
-      when '1110' # CMP
+      when '0010', '0011', '1100', '1101', '1110'  # ADD, SUB, AND, OR, CMP
         get_clock()
         @value_op1 = Simulador.get_value_rg(cod_reg[@id_op1]).to_i
         log_op1 = "Op1: #{cod_reg[@id_op1]}"
         @value_op2 = Simulador.get_value_rg(cod_reg[@id_op2]).to_i
         log_op2 = "Op2: #{cod_reg[@id_op2]}"
+      when '0110' # IN
+        get_clock()
+        log_op1 = "Op1: #{cod_reg[@id_op1]}"
+        @value_op2 = Simulador.get_value_rg(cod_reg[@id_op2]).to_i
+        log_op2 = "Op2: [#{@value_op2}]"
+      when '0111' # OUT
+        get_clock()
+        @value_op1 = Simulador.get_value_rg(cod_reg[@id_op1]).to_i
+        log_op1 = "Op1: [#{@value_op1}]"
+        @value_op2 = Simulador.get_value_rg(cod_reg[@id_op2]).to_i
+        log_op2 = "Op2: #{cod_reg[@id_op2]}"
+      when '1000', '1001', '1010', '1011', '0100', '0101' # JMP, JG, JE, JL, INC, DEC
+        get_clock()
+        @value_op1 = Simulador.get_value_rg(cod_reg[@id_op1]).to_i
+        log_op1 = "Op1: #{cod_reg[@id_op1]}"
       when '1111' # HLT
         # No operators
     end
-    Simulador.set_log_ula("Buscou operandos:\n" +
+    if (@op_code != '1111')
+      Simulador.set_log_ula("Buscou operandos:\n" +
                           "#{log_op1}\t#{log_op2}")
+    end
   end
 
   def run
     log_run = ''
     case @op_code
-      when '0001', '0110', '0111' # MOV, IN, OUT
+      when '0001', '0111' # MOV, OUT
         get_clock()
         @result_op = @value_op2
         log_run = "result_tmp = #{@value_op2}"
@@ -185,6 +162,10 @@ class Processador
         get_clock()
         @result_op = @value_op1 - 1
         log_run = "result_tmp = #{@value_op1} - 1"
+      when '0110' # IN
+        get_clock()
+        @result_op = Barramento.read('io',@value_op2)
+        log_run = "result_tmp = #{@result_op}"
       when '1000' # JMP
         get_clock()
         set_ip(@value_op1)
@@ -262,12 +243,15 @@ class Processador
       when '0110' # IN
         get_clock()
         Simulador.set_value_rg(cod_reg[@id_op1], @result_op)
+        Simulador.set_log_ula("Salvou:\n #{cod_reg[@id_op1]} <- result_tmp (#{@result_op})")
       when '0111' # OUT
         get_clock()
-        Barramento.write("io",@id_op1,@result_op)
+        Barramento.write("io",@value_op1.to_s,@result_op)
+        Simulador.set_log_ula("Salvou:\n [#{@value_op1}] <- result_tmp (#{@result_op})")
       when '1000','1001', '1010', '1011' # JMP, JG, JE, JL
         # Nada a ser feito
       when '1110' # CMP
+        get_clock()
         Simulador.set_value_rg("flags",@result_op)
         Simulador.set_log_ula("Salvou:\n Flags <- result_tmp (#{@result_op})")
       when '1111' # HLT

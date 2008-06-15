@@ -152,7 +152,7 @@ class Simulador
       @@glade['abrir_arq'].hide
     end
     @@glade['btn_clock'].signal_connect("clicked") { made_clock() }
-    @@glade['btn_clear'].signal_connect("clicked") { initialize_registers(); initialize_bus() }
+    @@glade['btn_clear'].signal_connect("clicked") { event_clear() }
 
     # Torna os dialogs visiveis ao serem chamados
     @@glade['mem_config'].signal_connect("activate") { @@glade['abrir_arq'].show; @t_config = 'mem' }
@@ -180,6 +180,12 @@ class Simulador
     if (! @@glade['io_size'].text.to_i.equal? @tam_io)
       @tam_io = resize_gridview(@@glade['gridview_io'], @tam_io, @@glade['io_size'].text.to_i)
     end
+  end
+
+  def event_clear
+    initialize_registers()
+    initialize_bus()
+    @@glade['txt_ula'].buffer.text = ""
   end
 
   def Simulador.set_value_rg(reg,value)
@@ -230,10 +236,8 @@ class Simulador
     @@glade['mem_config'].sensitive = false
     @@glade['io_config'].sensitive = false
     @@glade['editar_pref'].sensitive = false
-    @@glade['txt_ula'].buffer.text = ""
+    event_clear()
     @thread_proc = Thread.new do
-      initialize_registers()
-      initialize_bus()
       p = Processador.new
       p.start
       finaliza_simulacao()
