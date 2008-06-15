@@ -82,6 +82,8 @@ class Simulador
     # Configura valores defaults
     @@glade['clock_type'].active = 0
     @@glade['cache_size'].active = 0
+	@@glade['cache_mapeamento'].active = 0
+	@@glade['cache_atualizacao'].active = 0
     @@glade['io_size'].value = @tam_io
     @@glade['mem_size'].value = @tam_mem
     @@glade['sleep_clock'].value = 1
