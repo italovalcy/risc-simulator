@@ -119,8 +119,8 @@ class Simulador
     @@glade['clock_type'].active = 0
     @@glade['cache_size'].active = 0
     @@glade['cache_mapeamento'].active = 0
-    @@glade['cache_atualizacao'].active = 0
-    #@@glade['cache_habilitado'].active = true
+    @@glade['cache_atualizacao'].active = 1
+    @@glade['cache_habilitado'].active = true
     @@glade['io_size'].value = @tam_io
     @@glade['mem_size'].value = @tam_mem
     @@glade['sleep_clock'].value = 1
@@ -246,6 +246,19 @@ class Simulador
     end
   end
   
+  def Simulador.get_value_cache(address)
+    result = []
+    model = @@glade["gridview_cache"].model
+    iter = model.get_iter("#{address}")
+    if (iter != nil)
+      result.push(iter[1])
+      result.push(iter[2])
+      return result
+    else
+      return nil
+    end
+  end
+  
   def Simulador.set_value_grid(name, address, value)
     model = @@glade["gridview_#{name}"].model
     iter = model.get_iter("#{address}")
@@ -286,6 +299,10 @@ class Simulador
 
   def Simulador.get_type_mapping
     return @@glade['cache_mapeamento'].active
+  end
+
+  def Simulador.get_type_update_cache
+    return @@glade['cache_atualizacao'].active
   end
 
   def Simulador.get_cache_size

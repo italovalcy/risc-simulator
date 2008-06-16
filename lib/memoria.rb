@@ -8,7 +8,7 @@ class Memoria
   #         partir de address
   def Memoria.get_value(address, qtd) 
     Processador.get_clock()
-    return Simulador.get_value_grid('mem', address)
+    return Simulador.get_value_grid('mem', address,qtd)
   end
 
   # Armazena o valor de value na memoria no endereco address

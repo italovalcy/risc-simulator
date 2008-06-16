@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Mon Jun 16 10:54:24 2008 -->
+<!--Generated with glade3 3.4.5 on Mon Jun 16 17:26:01 2008 -->
 <glade-interface>
   <widget class="GtkWindow" id="simulador_window">
     <property name="width_request">800</property>
@@ -1003,6 +1003,7 @@ Feito automaticamente ao iniciar a simulação.</property>
             <child>
               <widget class="GtkFixed" id="fixed_cache">
                 <property name="visible">True</property>
+                <property name="tooltip" translatable="yes">Habilita o cache</property>
                 <child>
                   <widget class="GtkLabel" id="label1">
                     <property name="width_request">75</property>
@@ -1012,7 +1013,7 @@ Feito automaticamente ao iniciar a simulação.</property>
                   </widget>
                   <packing>
                     <property name="x">10</property>
-                    <property name="y">15</property>
+                    <property name="y">45</property>
                   </packing>
                 </child>
                 <child>
@@ -1026,7 +1027,7 @@ Feito automaticamente ao iniciar a simulação.</property>
                   </widget>
                   <packing>
                     <property name="x">106</property>
-                    <property name="y">15</property>
+                    <property name="y">45</property>
                   </packing>
                 </child>
                 <child>
@@ -1039,7 +1040,7 @@ Feito automaticamente ao iniciar a simulação.</property>
                   </widget>
                   <packing>
                     <property name="x">10</property>
-                    <property name="y">45</property>
+                    <property name="y">75</property>
                   </packing>
                 </child>
                 <child>
@@ -1054,7 +1055,7 @@ Fully Set Associative
                   </widget>
                   <packing>
                     <property name="x">106</property>
-                    <property name="y">47</property>
+                    <property name="y">75</property>
                   </packing>
                 </child>
                 <child>
@@ -1065,8 +1066,8 @@ Fully Set Associative
                     <property name="label" translatable="yes">Atualização:</property>
                   </widget>
                   <packing>
-                    <property name="x">7</property>
-                    <property name="y">80</property>
+                    <property name="x">10</property>
+                    <property name="y">110</property>
                   </packing>
                 </child>
                 <child>
@@ -1075,11 +1076,26 @@ Fully Set Associative
                     <property name="height_request">25</property>
                     <property name="visible">True</property>
                     <property name="items" translatable="yes">Write Back
-Write Trougth</property>
+Write Through</property>
                   </widget>
                   <packing>
                     <property name="x">106</property>
-                    <property name="y">81</property>
+                    <property name="y">110</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkCheckButton" id="cache_habilitado">
+                    <property name="width_request">200</property>
+                    <property name="height_request">25</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="label" translatable="yes">Habilitar cache</property>
+                    <property name="response_id">0</property>
+                    <property name="draw_indicator">True</property>
+                  </widget>
+                  <packing>
+                    <property name="x">10</property>
+                    <property name="y">15</property>
                   </packing>
                 </child>
               </widget>
