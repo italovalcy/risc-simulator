@@ -25,7 +25,20 @@ class Cache
 
   def fetch_value(address)
     pos = get_position(address)
-    Simulador.get_value_grid('cache',pos)
+    vet = Simulador.get_value_cache('cache',pos)
+    if(vet[0] == address)
+      #cache hit
+      return vet[1]
+    else
+      #cache miss
+      if(Simulador.get_type_update_cache == 0) #write back
+        #levar o que tem no cache para a memoria
+        #trazer novos dados da memoria para o cache
+      else #write through
+        Memoria.get_value(address,4)
+        #trazer novos dados da memoria para o cache
+      end
+    end
   end
 
   # Armazena o valor de value no cache no endereco address
