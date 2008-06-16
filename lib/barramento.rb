@@ -22,7 +22,6 @@ class Barramento
       value = Simulador.get_value_grid('io',address)
     end
     Simulador.set_value_bus(type,"data",value)
-    Simulador.set_value_bus(type,"con","0")
     return value
   end
 
@@ -34,7 +33,7 @@ class Barramento
     when 'mem'
       Memoria.set_value(address,value)
     when 'io'
-      #Simulador.set_value_grid('io',address,value)
+      Simulador.set_value_grid('io',address,value)
     end
   end
 end

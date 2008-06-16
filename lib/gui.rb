@@ -18,7 +18,7 @@ class Simulador
     @@glade = GladeXML.new('layout.glade', nil, 'simulador')  
     window = @@glade['simulador_window']
     initializa_configs()
-    make_gridview(@@glade['gridview_cache'],@tam_cache)
+    make_cache(@tam_cache)
     make_gridview(@@glade['gridview_mem'],@tam_mem)
     make_gridview(@@glade['gridview_io'],@tam_io)
     initialize_registers()
@@ -40,6 +40,32 @@ class Simulador
     if (@thread_proc != nil )
       @thread_proc.run
     end
+  end
+
+  def make_cache(tam)
+    view = @@glade['gridview_cache']
+    list = Gtk::ListStore.new(String,String,String)
+
+    # Adiciona elementos a lista
+    for i in 0..tam - 1
+      iter = list.append
+      iter[0] = i.to_s
+      iter[1] = "-1"
+      iter[2] = "0"
+    end
+
+    r1 = Gtk::CellRendererText.new
+    r2 = Gtk::CellRendererText.new
+    r3 = Gtk::CellRendererText.new
+    c1 = Gtk::TreeViewColumn.new("Id",r1, :text => 0)
+    c2 = Gtk::TreeViewColumn.new("Addr",r2, :text => 1)
+    c3 = Gtk::TreeViewColumn.new("Value",r3, :text => 2)
+    
+    view.append_column(c1)
+    view.append_column(c2)
+    view.append_column(c3)
+    view.selection.mode = Gtk::SELECTION_NONE
+    view.model = list
   end
  
   def make_gridview(view,tam)
@@ -216,10 +242,9 @@ class Simulador
   end
   
   def Simulador.set_value_grid(name, address, value)
-    #model = @@glade["gridview_#{name}"].model
-    #iter = model.get_iter("#{address}")
-    #iter[1] = value
-    @@glade["gridview_#{name}"].model.get_iter("#{address}")[1] = value
+    model = @@glade["gridview_#{name}"].model
+    iter = model.get_iter("#{address}")
+    iter[1] = value.to_s
   end
 
   def Simulador.set_value_rg(reg,value)
@@ -252,6 +277,14 @@ class Simulador
 
   def Simulador.automatic_clock?
     return @@glade['clock_type'].active_text == "Automatico"
+  end
+
+  def Simulador.get_type_mapping
+    return @@glade['cache_mapeamento'].active
+  end
+
+  def Simulador.get_cache_size
+    return @tam_cache
   end
 
 

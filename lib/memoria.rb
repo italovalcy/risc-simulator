@@ -1,6 +1,18 @@
 require 'gui'
 
-class Memoria
+class Memori
+  def get_row_cache(address)
+    case Simulador.get_type_mapping
+    when '0' # Direto
+      i = address.to_i % Simulador.get_cache_size
+    when '1' # Full set
+    when '2' # 2-set
+    when '3' # 4-set
+    end
+  end
+
+  def containing_in_cache(address)
+  end
 
   # Retorna o valor contido em alguns endereços de memoria
   #   address - endereço inicial de memoria

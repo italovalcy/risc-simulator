@@ -62,6 +62,8 @@ class Processador
   
   def fetch_next_instruction
     get_clock()
+    Simulador.set_value_bus('mem','con','0')
+    Simulador.set_value_bus('io','con','0')
     address = get_ip(2)
     @inst1 = Barramento.read("mem",address)
     Simulador.set_value_rg("ri",@inst1)
@@ -71,6 +73,7 @@ class Processador
 
   def decode_instruction
     get_clock()
+    Simulador.set_value_bus('mem','con','0')
     code1 = convert_to_bin(@inst1,8)
     code2 = convert_to_bin(@inst2,8)
     @op_code = code1[0..3]
@@ -222,6 +225,10 @@ class Processador
         @had_hlt_instruction = true
         log_run = "HLT"
     end
+    if (@op_code != '0110')
+      Simulador.set_value_bus('io','con','0')
+    end
+    Simulador.set_value_bus('mem','con','0')
     Simulador.set_log_ula("Executou:\n#{log_run}")
   end
 
@@ -236,7 +243,7 @@ class Processador
             Simulador.set_log_ula("Salvou:\n"+
                                   "#{cod_reg[@id_op1]} <- result_tmp (#{@result_op})")
           when '11' # Memory
-            Barramento.write("mem",@id_op1,@result_op)
+            Memoria.set_value(@id_op1,@result_op)
             Simulador.set_log_ula("Salvou:\n [#{@id_op1}] <- result_tmp (#{@result_op})")
         end
       when '0010', '0011', '0100', '0101', '1100', '1101' # ADD, SUB, INC, DEC, AND, OR
@@ -245,11 +252,12 @@ class Processador
         Simulador.set_log_ula("Salvou:\n #{cod_reg[@id_op1]} <- result_tmp (#{@result_op})")
       when '0110' # IN
         get_clock()
+        Simulador.set_value_bus('io','con','0')
         Simulador.set_value_rg(cod_reg[@id_op1], @result_op)
         Simulador.set_log_ula("Salvou:\n #{cod_reg[@id_op1]} <- result_tmp (#{@result_op})")
       when '0111' # OUT
         get_clock()
-        Barramento.write("io",@value_op1.to_s,@result_op)
+        Barramento.write("io",@value_op1.to_s,@result_op.to_s)
         Simulador.set_log_ula("Salvou:\n [#{@value_op1}] <- result_tmp (#{@result_op})")
       when '1000','1001', '1010', '1011' # JMP, JG, JE, JL
         # Nada a ser feito
