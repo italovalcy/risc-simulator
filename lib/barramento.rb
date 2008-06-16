@@ -17,7 +17,7 @@ class Barramento
     Simulador.set_value_bus(type,"end",address)
     case type
     when 'mem'
-      value = Memoria.get_value(address,1)
+      value = Cache.get_value(address,1)
     when 'io'
       value = Simulador.get_value_grid('io',address)
     end
@@ -31,7 +31,7 @@ class Barramento
     Simulador.set_value_bus(type,"data",value)
     case type
     when 'mem'
-      Memoria.set_value(address,value)
+      Cache.set_value(address,value)
     when 'io'
       Simulador.set_value_grid('io',address,value)
     end

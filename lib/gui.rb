@@ -120,6 +120,7 @@ class Simulador
     @@glade['cache_size'].active = 0
     @@glade['cache_mapeamento'].active = 0
     @@glade['cache_atualizacao'].active = 0
+    #@@glade['cache_habilitado'].active = true
     @@glade['io_size'].value = @tam_io
     @@glade['mem_size'].value = @tam_mem
     @@glade['sleep_clock'].value = 1
@@ -238,7 +239,11 @@ class Simulador
   def Simulador.get_value_grid(name, address)
     model = @@glade["gridview_#{name}"].model
     iter = model.get_iter("#{address}")
-    return iter[1]
+    if (iter != nil)
+      return iter[1]
+    else
+      return nil
+    end
   end
   
   def Simulador.set_value_grid(name, address, value)
@@ -246,7 +251,7 @@ class Simulador
     iter = model.get_iter("#{address}")
     iter[1] = value.to_s
   end
-
+  
   def Simulador.set_value_rg(reg,value)
     @@glade["rg_#{reg}"].text = value.to_s
   end
