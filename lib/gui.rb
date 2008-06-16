@@ -5,7 +5,6 @@ require 'processador'
 
 class Simulador
   def initialize()
-    @made_clock = false
     @tam_mem = 64
     @tam_cache = 16
     @tam_io = 64
@@ -13,7 +12,7 @@ class Simulador
     # t_config define onde serao aplicadas
     # as configuracoes que um determinado arquivo
     # traz. Seus valores possíveis são: 'mem', 'io'
-    @t_config = '' 
+    @t_config = ''
 
     Gtk.init
     @@glade = GladeXML.new('layout.glade', nil, 'simulador')  
@@ -30,6 +29,17 @@ class Simulador
 
   def show
     Gtk.main
+  end
+
+
+  ##
+  ## METODOS INTERNOS
+  ##
+  
+  def made_clock
+    if (@thread_proc != nil )
+      @thread_proc.run
+    end
   end
  
   def make_gridview(view,tam)
@@ -82,8 +92,8 @@ class Simulador
     # Configura valores defaults
     @@glade['clock_type'].active = 0
     @@glade['cache_size'].active = 0
-	@@glade['cache_mapeamento'].active = 0
-	@@glade['cache_atualizacao'].active = 0
+    @@glade['cache_mapeamento'].active = 0
+    @@glade['cache_atualizacao'].active = 0
     @@glade['io_size'].value = @tam_io
     @@glade['mem_size'].value = @tam_mem
     @@glade['sleep_clock'].value = 1
@@ -91,6 +101,7 @@ class Simulador
     buffer.text = ""
     @@glade['txt_ula'].buffer = buffer
     @@glade['txt_ula'].editable = false
+    @@glade['statusbar'].push(1,"Pulsos de clock: 0")
   end
 
   def initialize_registers()
@@ -109,48 +120,33 @@ class Simulador
   # Ler dados de um arquivo e armazena numa ListStore
   # Entrada:
   #   file_dialog - Dialog que foi usado para carregar o arquivo
-  #   view - TreeView que sera usada para armazenar os valores do arquivo
-  def carregar_arq(file_dialog, view)
+  #   name_view - TreeView que sera usada para armazenar os valores do arquivo
+  def carregar_arq(file_dialog, name_view)
     if (file_dialog.filename == "")
       return false
     end
     dados = Arquivo.read(file_dialog.filename)
     dados.each do |e|
       line = e.split(':')
-      gridview_set_value(view,line[0],line[1])
+      Simulador.set_value_grid(name_view,line[0],line[1])
     end
     return true
   end
 
-  def Simulador.get_value_memoria(address)
-    model = @@glade['gridview_mem'].model
-    iter = model.get_iter("#{address}")
-    return iter[1]
-  end
-
+  
   def get_value_cache()
-  end
-
-  # Insere valores numa treeview
-  # Entrada:
-  #   view - a treeview onde deseja-se inserir os valores
-  #   address - endereco da linha onde deseja-se inserir
-  #   value - valor que deseja-se inserir
-  def gridview_set_value(view,address,value)
-    iter = view.model.get_iter(address)
-    iter[1] = value
   end
 
   def set_events
     @@glade['simulador_window'].signal_connect("destroy") { Gtk.main_quit }  
     @@glade['btn_sair'].signal_connect("activate") { Gtk.main_quit }  
-    @@glade['btn_input_hd'].signal_connect( "clicked" ) { input_hd() }
-    @@glade['btn_input_net'].signal_connect( "clicked" ) { input_net() }
-    @@glade['btn_input_key'].signal_connect( "clicked" ) { input_key() }
+    @@glade['btn_input_hd'].signal_connect( "clicked" ) { event_input_hd() }
+    @@glade['btn_input_net'].signal_connect( "clicked" ) { event_input_net() }
+    @@glade['btn_input_key'].signal_connect( "clicked" ) { event_input_key() }
     @@glade['btn_iniciar'].signal_connect("clicked") { iniciar_simulacao() }
     @@glade['btn_stop'].signal_connect("clicked") { finaliza_simulacao() }
     @@glade['btn_abrir_arq'].signal_connect("clicked") do
-      carregar_arq(@@glade['abrir_arq'],@@glade["gridview_#{@t_config}"])
+      carregar_arq(@@glade['abrir_arq'],@t_config)
       @@glade['abrir_arq'].hide
     end
     @@glade['btn_clock'].signal_connect("clicked") { made_clock() }
@@ -171,6 +167,11 @@ class Simulador
     @@glade['btn_cancel_arq'].signal_connect("clicked") { @@glade['abrir_arq'].hide; @t_config = '' }
   end
 
+
+  ##
+  ## TRATAMENTO DE EVENTOS
+  ##
+
   def event_fechar_pref
     @@glade['pref_dialog'].hide
     if (! @@glade['mem_size'].text.to_i.equal? @tam_mem)
@@ -188,6 +189,37 @@ class Simulador
     initialize_registers()
     initialize_bus()
     @@glade['txt_ula'].buffer.text = ""
+    @@glade['statusbar'].push(1,"Pulsos de clock: 0")
+  end
+  
+  def event_input_hd
+    puts "Evento gerado pelo HD..."
+  end
+
+  def event_input_net
+    puts "Evento gerando pela Rede..."
+  end
+
+  def event_input_key
+    puts "Evento gerando pelo Teclado..."
+  end
+
+
+  ##
+  ## METODOS ESTATICOS
+  ##
+
+  def Simulador.get_value_grid(name, address)
+    model = @@glade["gridview_#{name}"].model
+    iter = model.get_iter("#{address}")
+    return iter[1]
+  end
+  
+  def Simulador.set_value_grid(name, address, value)
+    #model = @@glade["gridview_#{name}"].model
+    #iter = model.get_iter("#{address}")
+    #iter[1] = value
+    @@glade["gridview_#{name}"].model.get_iter("#{address}")[1] = value
   end
 
   def Simulador.set_value_rg(reg,value)
@@ -214,19 +246,15 @@ class Simulador
     @@glade['txt_ula'].buffer.text = value
   end
 
-  def made_clock
-    if (@thread_proc != nil )
-      @thread_proc.run
-    end
-  end
-  
-  def set_made_clock(x)
-    @made_clock = x
+  def Simulador.inc_clock(value)
+    @@glade['statusbar'].push(1,"Pulsos de clock: #{value}")
   end
 
   def Simulador.automatic_clock?
     return @@glade['clock_type'].active_text == "Automatico"
   end
+
+
 
   def iniciar_simulacao
     if (@@glade['clock_type'].active_text == "Manual")
@@ -257,17 +285,5 @@ class Simulador
     if (@thread_proc != nil )
       @thread_proc.kill
     end
-  end
-
-  def input_hd
-    puts "Evento gerado pelo HD..."
-  end
-
-  def input_net
-    puts "Evento gerando pela Rede..."
-  end
-
-  def input_key
-    puts "Evento gerando pelo Teclado..."
   end
 end

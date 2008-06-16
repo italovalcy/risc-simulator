@@ -15,6 +15,7 @@ class Processador
     @value_op2 = 0   # Os valores estao na base
     @result_op = 0   # decimal
     @sleep_clock = Simulador.get_sleep_clock
+    @count_clock = 0
   end
   
   def start
@@ -43,6 +44,8 @@ class Processador
     elsif
       Thread.stop
     end
+    @count_clock += 1
+    Simulador.inc_clock(@count_clock)
   end
 
   # Entrada:
