@@ -51,17 +51,46 @@ class Cache
   end
 
   def update_cache(address)
-    case Simulador.get_type_update_cache
-    when 0 #write back
-      pos = get_position(address.to_i)
-      block1 = Simulador.get_block_cache(pos)
-      pos = get_position(address.to_i+1)
-      block2 = Simulador.get_block_cache(pos)
-      #levar o que tem no cache para a memoria
-      #trazer novos dados da memoria para o cache
-    when 1 #write through
-      Memoria.get_value(address,4)
-      #trazer novos dados da memoria para o cache
+    if ( Simulador.get_type_update_cache == 0 ) # Write back
+      write_back_mem(address)
     end
+    load_cache_with_mem(address)
+    return Simulador.get_block_cache(get_position(address))[1]
+  end
+
+  def write_back_mem(address)
+    cont = 0
+    addr_to_send = ''
+    data_to_send = ''
+    for i in 0..3
+      pos = get_position(address.to_i + i)
+      block = Simulador.get_block_cache(pos)
+      if (block[0] != "-1")
+        if (cont == 0)
+          addr_to_send = block[0]
+          data_to_send = block[1]
+          cont = 1
+        elsif (cont == 1)
+          data_to_send = str_concat(data_to_send, block[0])
+          Barramento.write('mem',addr_to_send,data_to_send,2)
+          cont = 0
+        end
+      else
+        if (cont == 1)
+          Barramento.write('mem',addr_to_send,data_to_send,1)
+          cont = 0
+        end
+      end
+    end
+    if (cont == 1)
+      Barramento.write('mem',addr_to_send,data_to_send,1)
+    end
+  end
+
+  def load_cache_with_mem(address)
+    # TODO: Ir na memoria e buscar 4 endereços. Atentar-se para o caso em que 
+    # estes endereços possam ser inválidos. Ex: address == tam_mem, daí os próximos
+    # tres não serão válidos; possível solução: os próximos três serem os três primeiros
+    # daí é como se a memoria fosse um vetor circular....
   end
 end
