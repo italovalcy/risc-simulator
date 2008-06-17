@@ -9,6 +9,7 @@ class Simulador
     @tam_cache = 16
     @tam_io = 64
     @thread_proc = nil
+    @@count_clock = 0
     # t_config define onde serao aplicadas
     # as configuracoes que um determinado arquivo
     # traz. Seus valores possíveis são: 'mem', 'io'
@@ -120,7 +121,7 @@ class Simulador
     @@glade['cache_size'].active = 0
     @@glade['cache_mapeamento'].active = 0
     @@glade['cache_atualizacao'].active = 1
-    @@glade['cache_habilitado'].active = true
+    @@glade['cache_habilitado'].active = false
     @@glade['io_size'].value = @tam_io
     @@glade['mem_size'].value = @tam_mem
     @@glade['sleep_clock'].value = 1
@@ -158,10 +159,6 @@ class Simulador
       Simulador.set_value_grid(name_view,line[0],line[1])
     end
     return true
-  end
-
-  
-  def get_value_cache()
   end
 
   def set_events
@@ -216,6 +213,7 @@ class Simulador
     initialize_registers()
     initialize_bus()
     @@glade['txt_ula'].buffer.text = ""
+    @@count_clock = 0
     @@glade['statusbar'].push(1,"Pulsos de clock: 0")
   end
   
@@ -246,7 +244,7 @@ class Simulador
     end
   end
   
-  def Simulador.get_value_cache(address)
+  def Simulador.get_block_cache(address)
     result = []
     model = @@glade["gridview_cache"].model
     iter = model.get_iter("#{address}")
@@ -281,22 +279,10 @@ class Simulador
     return @@glade["bus_#{bus}_p_#{type}"].text
   end
 
-  def Simulador.get_sleep_clock
-    return @@glade['sleep_clock'].text.to_i
-  end
-
   def Simulador.set_log_ula(value)
     @@glade['txt_ula'].buffer.text = value
   end
-
-  def Simulador.inc_clock(value)
-    @@glade['statusbar'].push(1,"Pulsos de clock: #{value}")
-  end
-
-  def Simulador.automatic_clock?
-    return @@glade['clock_type'].active_text == "Automatico"
-  end
-
+  
   def Simulador.get_type_mapping
     return @@glade['cache_mapeamento'].active
   end
@@ -307,6 +293,20 @@ class Simulador
 
   def Simulador.get_cache_size
     return @tam_cache
+  end
+
+  def Simulador.cache_habilitado
+    return @@glade['cache_habilitado'].active?
+  end
+
+  def Simulador.get_clock
+    if (@@glade['clock_type'].active_text == "Automatico")
+      sleep @@glade['sleep_clock'].text.to_i
+    else
+      Processador.pause
+    end
+    @@count_clock += 1
+    @@glade['statusbar'].push(1,"Pulsos de clock: #{@@count_clock}")
   end
 
 
