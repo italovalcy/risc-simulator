@@ -257,6 +257,13 @@ class Simulador
     end
   end
   
+  def Simulador.set_block_cache(address, block)
+    model = @@glade["gridview_cache"].model
+    iter = model.get_iter("#{address}")
+    iter[1] = block[0]
+    iter[2] = block[1]
+  end
+  
   def Simulador.set_value_grid(name, address, value)
     model = @@glade["gridview_#{name}"].model
     iter = model.get_iter("#{address}")
@@ -293,6 +300,10 @@ class Simulador
 
   def Simulador.get_cache_size
     return @tam_cache
+  end
+  
+  def Simulador.get_mem_size
+    return @tam_mem
   end
 
   def Simulador.cache_habilitado

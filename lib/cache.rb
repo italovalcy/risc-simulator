@@ -25,6 +25,15 @@ class Cache
   
   # Armazena o valor de value no cache no endereco address
   def Cache.set_value(address, value)
+    b = []
+    b.push(address)
+    b.push(value)
+    if ( Simulador.get_type_update_cache == 0 ) # Write back
+      Simulador.set_block_cache(get_position(address),b)
+    else # Write Througt
+      Simulador.set_block_cache(get_position(address),b)
+      Barramento.write('mem',address,value)
+    end
   end
 
   def get_position(address)
@@ -44,7 +53,7 @@ class Cache
   def fetch_value(address)
     pos = get_position(address)
     block = Simulador.get_block_cache(pos)
-    if (block[0] == address + i)
+    if (block[0] == address)
       return block[1]
     end
     return nil
@@ -92,5 +101,44 @@ class Cache
     # estes endereços possam ser inválidos. Ex: address == tam_mem, daí os próximos
     # tres não serão válidos; possível solução: os próximos três serem os três primeiros
     # daí é como se a memoria fosse um vetor circular....
+    cont = 0
+    i = address
+    addr_to_get = ''
+    while (i < Simulador.get_mem_size and i < 4)
+      if (cont == 0)
+        addr_to_get = address.to_i + i
+        cont = 1
+      elsif (cont == 1)
+        b = []
+        value = Barramento.read('mem',addr_to_get,2).to_i
+        b.push(addr_to_get)
+        b.push(value/256)
+        Simulador.set_block_cache(get_position(addr_to_get), b)
+        b.clear
+        b.push(addr_to_get + 1)
+        b.push(value - value1*256)
+        Simulador.set_block_cache(get_position(addr_to_get + 1), b)
+        b.clear
+        cont = 0
+      end
+    end
+    while (i < 4)
+      if (cont == 0)
+        addr_to_get = i
+        cont = 1
+      elsif (cont == 1)
+        b = []
+        value = Barramento.read('mem',addr_to_get,2).to_i
+        b.push(addr_to_get)
+        b.push(value/256)
+        Simulador.set_block_cache(get_position(addr_to_get), b)
+        b.clear
+        b.push(addr_to_get + 1)
+        b.push(value - value1*256)
+        Simulador.set_block_cache(get_position(addr_to_get + 1), b)
+        b.clear
+        cont = 0
+      end
+    end
   end
 end
