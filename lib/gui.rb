@@ -5,9 +5,9 @@ require 'processador'
 
 class Simulador
   def initialize()
-    @tam_mem = 64
-    @tam_cache = 16
-    @tam_io = 64
+    @@tam_mem = 64
+    @@tam_cache = 16
+    @@tam_io = 64
     @thread_proc = nil
     @@count_clock = 0
     # t_config define onde serao aplicadas
@@ -19,9 +19,9 @@ class Simulador
     @@glade = GladeXML.new('layout.glade', nil, 'simulador')  
     window = @@glade['simulador_window']
     initializa_configs()
-    make_cache(@tam_cache)
-    make_gridview(@@glade['gridview_mem'],@tam_mem)
-    make_gridview(@@glade['gridview_io'],@tam_io)
+    make_cache(@@tam_cache)
+    make_gridview(@@glade['gridview_mem'],@@tam_mem)
+    make_gridview(@@glade['gridview_io'],@@tam_io)
     initialize_registers()
     initialize_bus()
     set_events()
@@ -121,9 +121,9 @@ class Simulador
     @@glade['cache_size'].active = 0
     @@glade['cache_mapeamento'].active = 0
     @@glade['cache_atualizacao'].active = 1
-    @@glade['cache_habilitado'].active = false
-    @@glade['io_size'].value = @tam_io
-    @@glade['mem_size'].value = @tam_mem
+    @@glade['cache_habilitado'].active = true
+    @@glade['io_size'].value = @@tam_io
+    @@glade['mem_size'].value = @@tam_mem
     @@glade['sleep_clock'].value = 1
     buffer = Gtk::TextBuffer.new
     buffer.text = ""
@@ -198,14 +198,14 @@ class Simulador
 
   def event_fechar_pref
     @@glade['pref_dialog'].hide
-    if (! @@glade['mem_size'].text.to_i.equal? @tam_mem)
-      @tam_mem = resize_gridview(@@glade['gridview_mem'], @tam_mem, @@glade['mem_size'].text.to_i)
+    if (! @@glade['mem_size'].text.to_i.equal? @@tam_mem)
+      @@tam_mem = resize_gridview(@@glade['gridview_mem'], @@tam_mem, @@glade['mem_size'].text.to_i)
     end
-    if (! @@glade['cache_size'].active_text.to_i.equal? @tam_cache)
-      @tam_cache = resize_gridview(@@glade['gridview_cache'], @tam_cache, @@glade['cache_size'].active_text.to_i)
+    if (! @@glade['cache_size'].active_text.to_i.equal? @@tam_cache)
+      @@tam_cache = resize_gridview(@@glade['gridview_cache'], @@tam_cache, @@glade['cache_size'].active_text.to_i)
     end
-    if (! @@glade['io_size'].text.to_i.equal? @tam_io)
-      @tam_io = resize_gridview(@@glade['gridview_io'], @tam_io, @@glade['io_size'].text.to_i)
+    if (! @@glade['io_size'].text.to_i.equal? @@tam_io)
+      @@tam_io = resize_gridview(@@glade['gridview_io'], @@tam_io, @@glade['io_size'].text.to_i)
     end
   end
 
@@ -260,8 +260,8 @@ class Simulador
   def Simulador.set_block_cache(address, block)
     model = @@glade["gridview_cache"].model
     iter = model.get_iter("#{address}")
-    iter[1] = block[0]
-    iter[2] = block[1]
+    iter[1] = block[0].to_s
+    iter[2] = block[1].to_s
   end
   
   def Simulador.set_value_grid(name, address, value)
@@ -299,11 +299,11 @@ class Simulador
   end
 
   def Simulador.get_cache_size
-    return @tam_cache
+    return @@tam_cache
   end
   
   def Simulador.get_mem_size
-    return @tam_mem
+    return @@tam_mem
   end
 
   def Simulador.cache_habilitado

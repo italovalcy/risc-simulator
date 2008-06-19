@@ -14,6 +14,7 @@ class Processador
     @value_op2 = 0   # Os valores estao na base
     @result_op = 0   # decimal
     @count_clock = 0
+    @cache = Cache.new
   end
 
   def Processador.pause
@@ -56,9 +57,9 @@ class Processador
     Simulador.get_clock()
     Simulador.set_value_bus('io','con','0')
     address = get_ip(2)
-    inst = Cache.get_value(address,2)
+    inst = @cache.get_value(address,2)
     Simulador.set_value_rg('ri',inst)
-    Simulador.set_log_ula("Buscou instrução:\n" + inst)
+    Simulador.set_log_ula("Buscou instrução:\n" + inst.to_s)
   end
 
   def decode_instruction
@@ -87,7 +88,7 @@ class Processador
             log_op1 = "Op1: #{cod_reg[@id_op1]}"
           when "11" # Memory
             address = get_ip(1)
-            @id_op1 = Cache.get_value(address,1).to_i
+            @id_op1 = @cache.get_value(address,1).to_i
             log_op1 = "Op1: [#{@id_op1}]"
         end
         case @t_op2
@@ -95,12 +96,12 @@ class Processador
             @value_op2 = Simulador.get_value_rg(cod_reg[@id_op2]).to_i
             log_op2 = "Op2: #{cod_reg[@id_op2]}"
           when '10' # Value
-            @value_op2 = Cache.get_value(get_ip(1),1).to_i
+            @value_op2 = @cache.get_value(get_ip(1),1).to_i
             log_op2 = "Op2: #{@value_op2}"
           when '11'  # Memory
             address = get_ip(1)
-            @id_op2 = Cache.get_value(address,1).to_i
-            @value_op2 = Cache.get_value(@id_op2,1).to_i
+            @id_op2 = @cache.get_value(address,1).to_i
+            @value_op2 = @cache.get_value(@id_op2,1).to_i
             log_op2 = "Op2: [#{@id_op2}]"
         end
       when '0010', '0011', '1100', '1101', '1110'  # ADD, SUB, AND, OR, CMP
@@ -158,7 +159,7 @@ class Processador
         log_run = "result_tmp = #{@value_op1} - 1"
       when '0110' # IN
         Simulador.get_clock()
-        @result_op = Barramento.read('io',@value_op2)
+        @result_op = Barramento.read('io',@value_op2,1)
         log_run = "result_tmp = #{@result_op}"
       when '1000' # JMP
         Simulador.get_clock()
@@ -230,7 +231,7 @@ class Processador
             Simulador.set_log_ula("Salvou:\n"+
                                   "#{cod_reg[@id_op1]} <- result_tmp (#{@result_op})")
           when '11' # Memory
-            Cache.set_value(@id_op1,@result_op)
+            @cache.set_value(@id_op1,@result_op)
             Simulador.set_log_ula("Salvou:\n [#{@id_op1}] <- result_tmp (#{@result_op})")
         end
       when '0010', '0011', '0100', '0101', '1100', '1101' # ADD, SUB, INC, DEC, AND, OR

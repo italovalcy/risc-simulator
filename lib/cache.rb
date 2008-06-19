@@ -6,7 +6,7 @@ class Cache
   #   address - endereço inicial do cache
   #   qtd - quantidade de registros que deve ser lidos a 
   #         partir de address
-  def Cache.get_value(address, qtd)
+  def get_value(address, qtd)
     result = ''
     if(Simulador.cache_habilitado)
       for i in 0..qtd - 1
@@ -24,7 +24,7 @@ class Cache
   end
   
   # Armazena o valor de value no cache no endereco address
-  def Cache.set_value(address, value)
+  def set_value(address, value)
     b = []
     b.push(address)
     b.push(value)
@@ -39,7 +39,7 @@ class Cache
   def get_position(address)
     case (Simulador.get_type_mapping)
       when 0 #mapeamento direto
-        return address.to_i.mod(Simulador.get_cache_size)
+        return address.to_i % Simulador.get_cache_size
       when 1 #mapeamento fully-set
       when 2 #mapeamento 2-set
       when 3 #mapeamento 4-set
@@ -53,7 +53,7 @@ class Cache
   def fetch_value(address)
     pos = get_position(address)
     block = Simulador.get_block_cache(pos)
-    if (block[0] == address)
+    if (block[0].to_i == address.to_i)
       return block[1]
     end
     return nil
@@ -102,8 +102,8 @@ class Cache
     # tres não serão válidos; possível solução: os próximos três serem os três primeiros
     # daí é como se a memoria fosse um vetor circular....
     cont = 0
-    i = address
-    addr_to_get = ''
+    i = 0
+    addr_to_get = -1
     while (i < Simulador.get_mem_size and i < 4)
       if (cont == 0)
         addr_to_get = address.to_i + i
@@ -111,8 +111,9 @@ class Cache
       elsif (cont == 1)
         b = []
         value = Barramento.read('mem',addr_to_get,2).to_i
+        value1 = value/256
         b.push(addr_to_get)
-        b.push(value/256)
+        b.push(value1)
         Simulador.set_block_cache(get_position(addr_to_get), b)
         b.clear
         b.push(addr_to_get + 1)
@@ -121,6 +122,7 @@ class Cache
         b.clear
         cont = 0
       end
+      i += 1
     end
     while (i < 4)
       if (cont == 0)
@@ -139,6 +141,7 @@ class Cache
         b.clear
         cont = 0
       end
+      i += 1
     end
   end
 end
