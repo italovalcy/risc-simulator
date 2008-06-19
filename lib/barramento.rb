@@ -31,14 +31,15 @@ class Barramento
     return value
   end
 
-  def Barramento.write(type,address,value)
-    Simulador.set_value_bus(type,"con","2")
+  def Barramento.write(type,address,value,qtd)
+    con = qtd.to_s(2).rjust(2,'0') + "10"
+    Simulador.set_value_bus(type,"con",con.to_i(2).to_s)
     Simulador.set_value_bus(type,"end",address)
     Simulador.set_value_bus(type,"data",value)
     Simulador.get_clock
     case type
     when 'mem'
-      Memoria.set_value(address,value)
+      Memoria.set_value(address,value,qtd)
     when 'io'
       Simulador.set_value_grid('io',address,value)
     end

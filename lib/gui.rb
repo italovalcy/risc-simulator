@@ -120,7 +120,7 @@ class Simulador
     @@glade['clock_type'].active = 0
     @@glade['cache_size'].active = 0
     @@glade['cache_mapeamento'].active = 0
-    @@glade['cache_atualizacao'].active = 1
+    @@glade['cache_atualizacao'].active = 0
     @@glade['cache_habilitado'].active = true
     @@glade['io_size'].value = @@tam_io
     @@glade['mem_size'].value = @@tam_mem
@@ -159,6 +159,15 @@ class Simulador
       Simulador.set_value_grid(name_view,line[0],line[1])
     end
     return true
+  end
+
+  def clear_cache
+    list = @@glade['gridview_cache'].model
+    for i in 0..@@tam_cache -1
+      iter = list.get_iter(i.to_s)
+      iter[1] = "-1"
+      iter[2] = "0"
+    end
   end
 
   def set_events
@@ -215,6 +224,7 @@ class Simulador
     @@glade['txt_ula'].buffer.text = ""
     @@count_clock = 0
     @@glade['statusbar'].push(1,"Pulsos de clock: 0")
+    clear_cache()
   end
   
   def event_input_hd
