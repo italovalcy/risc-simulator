@@ -59,7 +59,7 @@ class Simulador
     r2 = Gtk::CellRendererText.new
     r3 = Gtk::CellRendererText.new
     c1 = Gtk::TreeViewColumn.new("Id",r1, :text => 0)
-    c2 = Gtk::TreeViewColumn.new("Addr",r2, :text => 1)
+    c2 = Gtk::TreeViewColumn.new("Tag",r2, :text => 1)
     c3 = Gtk::TreeViewColumn.new("Value",r3, :text => 2)
     
     view.append_column(c1)

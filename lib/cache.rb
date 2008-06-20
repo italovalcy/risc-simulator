@@ -80,7 +80,7 @@ class Cache
           data_to_send = block[1]
           cont = 1
         elsif (cont == 1)
-          data_to_send = str_concat(data_to_send, block[0])
+          data_to_send = str_concat(data_to_send, block[1])
           Barramento.write('mem',addr_to_send,data_to_send,2)
           cont = 0
         end
