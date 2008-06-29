@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Mon Jun 16 17:26:01 2008 -->
+<!--Generated with glade3 3.4.5 on Sat Jun 28 19:36:03 2008 -->
 <glade-interface>
   <widget class="GtkWindow" id="simulador_window">
     <property name="width_request">800</property>
@@ -306,135 +306,21 @@ Feito automaticamente ao iniciar a simulação.</property>
                             <property name="n_rows">7</property>
                             <property name="n_columns">2</property>
                             <child>
-                              <widget class="GtkLabel" id="label10">
+                              <widget class="GtkLabel" id="label8">
                                 <property name="visible">True</property>
-                                <property name="label" translatable="yes">Ax</property>
-                              </widget>
-                            </child>
-                            <child>
-                              <widget class="GtkLabel" id="label11">
-                                <property name="visible">True</property>
-                                <property name="label" translatable="yes">Bx</property>
+                                <property name="label" translatable="yes">Flags</property>
                               </widget>
                               <packing>
-                                <property name="top_attach">1</property>
-                                <property name="bottom_attach">2</property>
+                                <property name="top_attach">6</property>
+                                <property name="bottom_attach">7</property>
                               </packing>
                             </child>
                             <child>
-                              <widget class="GtkLabel" id="label12">
+                              <widget class="GtkLabel" id="label9">
                                 <property name="visible">True</property>
-                                <property name="label" translatable="yes">Cx</property>
+                                <property name="label" translatable="yes">RI</property>
                               </widget>
                               <packing>
-                                <property name="top_attach">2</property>
-                                <property name="bottom_attach">3</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <widget class="GtkLabel" id="label13">
-                                <property name="visible">True</property>
-                                <property name="label" translatable="yes">Dx</property>
-                              </widget>
-                              <packing>
-                                <property name="top_attach">3</property>
-                                <property name="bottom_attach">4</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <widget class="GtkLabel" id="label14">
-                                <property name="visible">True</property>
-                                <property name="label" translatable="yes">IP</property>
-                              </widget>
-                              <packing>
-                                <property name="top_attach">4</property>
-                                <property name="bottom_attach">5</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <widget class="GtkEntry" id="rg_ax">
-                                <property name="width_request">70</property>
-                                <property name="height_request">25</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="editable">False</property>
-                              </widget>
-                              <packing>
-                                <property name="left_attach">1</property>
-                                <property name="right_attach">2</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <widget class="GtkEntry" id="rg_bx">
-                                <property name="width_request">70</property>
-                                <property name="height_request">0</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="editable">False</property>
-                              </widget>
-                              <packing>
-                                <property name="left_attach">1</property>
-                                <property name="right_attach">2</property>
-                                <property name="top_attach">1</property>
-                                <property name="bottom_attach">2</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <widget class="GtkEntry" id="rg_cx">
-                                <property name="width_request">70</property>
-                                <property name="height_request">0</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="editable">False</property>
-                              </widget>
-                              <packing>
-                                <property name="left_attach">1</property>
-                                <property name="right_attach">2</property>
-                                <property name="top_attach">2</property>
-                                <property name="bottom_attach">3</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <widget class="GtkEntry" id="rg_dx">
-                                <property name="width_request">70</property>
-                                <property name="height_request">25</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="editable">False</property>
-                              </widget>
-                              <packing>
-                                <property name="left_attach">1</property>
-                                <property name="right_attach">2</property>
-                                <property name="top_attach">3</property>
-                                <property name="bottom_attach">4</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <widget class="GtkEntry" id="rg_ip">
-                                <property name="width_request">70</property>
-                                <property name="height_request">0</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="editable">False</property>
-                              </widget>
-                              <packing>
-                                <property name="left_attach">1</property>
-                                <property name="right_attach">2</property>
-                                <property name="top_attach">4</property>
-                                <property name="bottom_attach">5</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <widget class="GtkEntry" id="rg_ri">
-                                <property name="width_request">70</property>
-                                <property name="height_request">0</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="editable">False</property>
-                              </widget>
-                              <packing>
-                                <property name="left_attach">1</property>
-                                <property name="right_attach">2</property>
                                 <property name="top_attach">5</property>
                                 <property name="bottom_attach">6</property>
                               </packing>
@@ -455,24 +341,138 @@ Feito automaticamente ao iniciar a simulação.</property>
                               </packing>
                             </child>
                             <child>
-                              <widget class="GtkLabel" id="label9">
+                              <widget class="GtkEntry" id="rg_ri">
+                                <property name="width_request">70</property>
+                                <property name="height_request">0</property>
                                 <property name="visible">True</property>
-                                <property name="label" translatable="yes">RI</property>
+                                <property name="can_focus">True</property>
+                                <property name="editable">False</property>
                               </widget>
                               <packing>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
                                 <property name="top_attach">5</property>
                                 <property name="bottom_attach">6</property>
                               </packing>
                             </child>
                             <child>
-                              <widget class="GtkLabel" id="label8">
+                              <widget class="GtkEntry" id="rg_ip">
+                                <property name="width_request">70</property>
+                                <property name="height_request">0</property>
                                 <property name="visible">True</property>
-                                <property name="label" translatable="yes">Flags</property>
+                                <property name="can_focus">True</property>
+                                <property name="editable">False</property>
                               </widget>
                               <packing>
-                                <property name="top_attach">6</property>
-                                <property name="bottom_attach">7</property>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
+                                <property name="top_attach">4</property>
+                                <property name="bottom_attach">5</property>
                               </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkEntry" id="rg_dx">
+                                <property name="width_request">70</property>
+                                <property name="height_request">25</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="editable">False</property>
+                              </widget>
+                              <packing>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
+                                <property name="top_attach">3</property>
+                                <property name="bottom_attach">4</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkEntry" id="rg_cx">
+                                <property name="width_request">70</property>
+                                <property name="height_request">0</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="editable">False</property>
+                              </widget>
+                              <packing>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
+                                <property name="top_attach">2</property>
+                                <property name="bottom_attach">3</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkEntry" id="rg_bx">
+                                <property name="width_request">70</property>
+                                <property name="height_request">0</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="editable">False</property>
+                              </widget>
+                              <packing>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
+                                <property name="top_attach">1</property>
+                                <property name="bottom_attach">2</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkEntry" id="rg_ax">
+                                <property name="width_request">70</property>
+                                <property name="height_request">25</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="editable">False</property>
+                              </widget>
+                              <packing>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkLabel" id="label14">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">IP</property>
+                              </widget>
+                              <packing>
+                                <property name="top_attach">4</property>
+                                <property name="bottom_attach">5</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkLabel" id="label13">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">Dx</property>
+                              </widget>
+                              <packing>
+                                <property name="top_attach">3</property>
+                                <property name="bottom_attach">4</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkLabel" id="label12">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">Cx</property>
+                              </widget>
+                              <packing>
+                                <property name="top_attach">2</property>
+                                <property name="bottom_attach">3</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkLabel" id="label11">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">Bx</property>
+                              </widget>
+                              <packing>
+                                <property name="top_attach">1</property>
+                                <property name="bottom_attach">2</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkLabel" id="label10">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">Ax</property>
+                              </widget>
                             </child>
                           </widget>
                           <packing>
@@ -574,7 +574,7 @@ Feito automaticamente ao iniciar a simulação.</property>
             </child>
             <child>
               <widget class="GtkFrame" id="frame_hierarquia_memoria">
-                <property name="width_request">300</property>
+                <property name="width_request">375</property>
                 <property name="height_request">465</property>
                 <property name="visible">True</property>
                 <property name="label_xalign">0</property>
@@ -671,8 +671,105 @@ Feito automaticamente ao iniciar a simulação.</property>
                             </child>
                           </widget>
                           <packing>
-                            <property name="x">155</property>
+                            <property name="x">230</property>
                             <property name="y">20</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkLabel" id="label_bus_data_mem">
+                            <property name="width_request">70</property>
+                            <property name="height_request">20</property>
+                            <property name="visible">True</property>
+                            <property name="label" translatable="yes">Dados</property>
+                          </widget>
+                          <packing>
+                            <property name="x">150</property>
+                            <property name="y">280</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkEntry" id="bus_data_p_mem">
+                            <property name="width_request">70</property>
+                            <property name="height_request">25</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="editable">False</property>
+                          </widget>
+                          <packing>
+                            <property name="x">150</property>
+                            <property name="y">298</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkHSeparator" id="hseparator2">
+                            <property name="width_request">70</property>
+                            <property name="height_request">10</property>
+                            <property name="visible">True</property>
+                          </widget>
+                          <packing>
+                            <property name="x">150</property>
+                            <property name="y">324</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkLabel" id="label_bus_end_mem">
+                            <property name="width_request">70</property>
+                            <property name="height_request">20</property>
+                            <property name="visible">True</property>
+                            <property name="label" translatable="yes">Endereços</property>
+                          </widget>
+                          <packing>
+                            <property name="x">150</property>
+                            <property name="y">333</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkEntry" id="bus_end_p_mem">
+                            <property name="width_request">70</property>
+                            <property name="height_request">25</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="editable">False</property>
+                          </widget>
+                          <packing>
+                            <property name="x">150</property>
+                            <property name="y">353</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkHSeparator" id="hseparator3">
+                            <property name="width_request">70</property>
+                            <property name="height_request">10</property>
+                            <property name="visible">True</property>
+                          </widget>
+                          <packing>
+                            <property name="x">150</property>
+                            <property name="y">380</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkLabel" id="label_bus_con_mem">
+                            <property name="width_request">70</property>
+                            <property name="height_request">20</property>
+                            <property name="visible">True</property>
+                            <property name="label" translatable="yes">Controle</property>
+                          </widget>
+                          <packing>
+                            <property name="x">151</property>
+                            <property name="y">388</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkEntry" id="bus_con_p_mem">
+                            <property name="width_request">70</property>
+                            <property name="height_request">25</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="editable">False</property>
+                          </widget>
+                          <packing>
+                            <property name="x">151</property>
+                            <property name="y">406</property>
                           </packing>
                         </child>
                       </widget>
@@ -691,83 +788,8 @@ Feito automaticamente ao iniciar a simulação.</property>
                 </child>
               </widget>
               <packing>
-                <property name="x">485</property>
+                <property name="x">421</property>
                 <property name="y">30</property>
-              </packing>
-            </child>
-            <child>
-              <widget class="GtkEntry" id="bus_data_p_mem">
-                <property name="width_request">70</property>
-                <property name="height_request">25</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="editable">False</property>
-              </widget>
-              <packing>
-                <property name="x">412</property>
-                <property name="y">330</property>
-              </packing>
-            </child>
-            <child>
-              <widget class="GtkEntry" id="bus_end_p_mem">
-                <property name="width_request">70</property>
-                <property name="height_request">25</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="editable">False</property>
-              </widget>
-              <packing>
-                <property name="x">412</property>
-                <property name="y">386</property>
-              </packing>
-            </child>
-            <child>
-              <widget class="GtkEntry" id="bus_con_p_mem">
-                <property name="width_request">70</property>
-                <property name="height_request">25</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="editable">False</property>
-              </widget>
-              <packing>
-                <property name="x">412</property>
-                <property name="y">442</property>
-              </packing>
-            </child>
-            <child>
-              <widget class="GtkLabel" id="label_bus_data_mem">
-                <property name="width_request">70</property>
-                <property name="height_request">20</property>
-                <property name="visible">True</property>
-                <property name="label" translatable="yes">Dados</property>
-              </widget>
-              <packing>
-                <property name="x">412</property>
-                <property name="y">312</property>
-              </packing>
-            </child>
-            <child>
-              <widget class="GtkLabel" id="label_bus_end_mem">
-                <property name="width_request">70</property>
-                <property name="height_request">20</property>
-                <property name="visible">True</property>
-                <property name="label" translatable="yes">Endereços</property>
-              </widget>
-              <packing>
-                <property name="x">412</property>
-                <property name="y">369</property>
-              </packing>
-            </child>
-            <child>
-              <widget class="GtkLabel" id="label_bus_con_mem">
-                <property name="width_request">70</property>
-                <property name="height_request">20</property>
-                <property name="visible">True</property>
-                <property name="label" translatable="yes">Controle</property>
-              </widget>
-              <packing>
-                <property name="x">412</property>
-                <property name="y">426</property>
               </packing>
             </child>
             <child>
@@ -865,28 +887,6 @@ Feito automaticamente ao iniciar a simulação.</property>
               <packing>
                 <property name="x">280</property>
                 <property name="y">240</property>
-              </packing>
-            </child>
-            <child>
-              <widget class="GtkHSeparator" id="hseparator2">
-                <property name="width_request">70</property>
-                <property name="height_request">10</property>
-                <property name="visible">True</property>
-              </widget>
-              <packing>
-                <property name="x">412</property>
-                <property name="y">358</property>
-              </packing>
-            </child>
-            <child>
-              <widget class="GtkHSeparator" id="hseparator3">
-                <property name="width_request">70</property>
-                <property name="height_request">10</property>
-                <property name="visible">True</property>
-              </widget>
-              <packing>
-                <property name="x">412</property>
-                <property name="y">415</property>
               </packing>
             </child>
           </widget>
