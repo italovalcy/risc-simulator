@@ -29,6 +29,7 @@ class Processador
       run()
       save()
     end
+    Simulador.testar
   end
 
   def set_ip(value)

@@ -44,7 +44,8 @@ class Cache
           write_back_mem_directmap(address)
         end
         load_cache_with_mem_directmap(address)
-        return Simulador.get_block_cache(get_position(address))[1]
+        pos = address.to_i % Simulador.get_cache_size
+        return Simulador.get_block_cache(pos)[1]
       when 1 #mapeamento fully-set
         pos =  (rand*100).to_i % Simulador.get_cache_size
         if ( Simulador.get_type_update_cache == 0 ) # Write back
@@ -86,14 +87,15 @@ class Cache
     b = []
     b.push(address)
     b.push(value)
+    pos = address.to_i % Simulador.get_cache_size
     if ( Simulador.get_type_update_cache == 0 ) # Write back
-      old_block = Simulador.get_block_cache(get_position(address))[0]
+      old_block = Simulador.get_block_cache(pos)[0]
       if (old_block[0]!=address.to_s && old_block[0]!="-1")
         Barramento.write('mem',block[0],block[1])
       end
       Simulador.set_block_cache(pos,b)
     else # Write Througt
-      Simulador.set_block_cache(get_position(address),b)
+      Simulador.set_block_cache(pos,b)
       Barramento.write('mem',address,value)
     end
   end
@@ -165,7 +167,7 @@ class Cache
   end
 
   def fetch_value_directmap(address)
-    pos = get_position(address)
+    pos = address.to_i % Simulador.get_cache_size
     block = Simulador.get_block_cache(pos)
     if (block[0].to_i == address.to_i)
       return block[1]
@@ -199,7 +201,7 @@ class Cache
     addr_to_send = ''
     data_to_send = ''
     for i in 0..3
-      pos = get_position(address.to_i + i)
+      pos = address.to_i % Simulador.get_cache_size
       block = Simulador.get_block_cache(pos)
       if (block[0] != "-1")
         if (cont == 0)
@@ -236,7 +238,7 @@ class Cache
           data_to_send = block[1]
           cont = 1
         elsif (cont == 1)
-          if (block[0].to_i == address.to_i + i)
+          if (block[0].to_i == addr_to_send.to_i + 1)
             data_to_send = str_concat(data_to_send, block[1])
             Barramento.write('mem',addr_to_send,data_to_send,2)
             cont = 0
@@ -271,7 +273,7 @@ class Cache
           data_to_send = block[1]
           cont = 1
         elsif (cont == 1)
-          if (block[0].to_i == address.to_i + i)
+          if (block[0].to_i == addr_to_send.to_i + 1)
             data_to_send = str_concat(data_to_send, block[1])
             Barramento.write('mem',addr_to_send,data_to_send,2)
             cont = 0
@@ -308,11 +310,13 @@ class Cache
         value1 = value/256
         b.push(addr_to_get)
         b.push(value1)
-        Simulador.set_block_cache(get_position(addr_to_get), b)
+        pos = addr_to_get % Simulador.get_cache_size
+        Simulador.set_block_cache(pos, b)
         b.clear
         b.push(addr_to_get + 1)
         b.push(value - value1*256)
-        Simulador.set_block_cache(get_position(addr_to_get + 1), b)
+        pos = (addr_to_get + 1) % Simulador.get_cache_size
+        Simulador.set_block_cache(pos, b)
         b.clear
         cont = 0
       end
@@ -327,11 +331,13 @@ class Cache
         value = Barramento.read('mem',addr_to_get,2).to_i
         b.push(addr_to_get)
         b.push(value/256)
-        Simulador.set_block_cache(get_position(addr_to_get), b)
+        pos = addr_to_get % Simulador.get_cache_size
+        Simulador.set_block_cache(pos, b)
         b.clear
         b.push(addr_to_get + 1)
         b.push(value - value1*256)
-        Simulador.set_block_cache(get_position(addr_to_get + 1), b)
+        pos = (addr_to_get + 1) % Simulador.get_cache_size
+        Simulador.set_block_cache(pos, b)
         b.clear
         cont = 0
       end

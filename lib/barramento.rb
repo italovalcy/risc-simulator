@@ -15,7 +15,7 @@ class Barramento
   #   Valor contido em address
   def Barramento.read(type,address, qtd)
     # Define o valor do controle
-    con = qtd.to_s(2).rjust(4,'0') + "0001"
+    con = qtd.to_s(2).rjust(2,'0') + "01"
     con = con.to_i(2).to_s
 
     Simulador.set_value_bus(type,"con",con)
@@ -28,6 +28,7 @@ class Barramento
       value = Simulador.get_value_grid('io',address)
     end
     Simulador.set_value_bus(type,"data",value)
+    Simulador.set_value_bus(type,"con","0")
     return value
   end
 
@@ -43,5 +44,6 @@ class Barramento
     when 'io'
       Simulador.set_value_grid('io',address,value)
     end
+    Simulador.set_value_bus(type,"con","0")
   end
 end

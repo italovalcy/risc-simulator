@@ -153,6 +153,9 @@ class Simulador
     if (file_dialog.filename == "")
       return false
     end
+    if (name_view == 'mem')
+      @@file = file_dialog.filename
+    end
     dados = Arquivo.read(file_dialog.filename)
     dados.each do |e|
       line = e.split(':')
@@ -333,6 +336,7 @@ class Simulador
 
 
   def iniciar_simulacao
+    puts "================Iniciando simuladacao===================="
     if (@@glade['clock_type'].active_text == "Manual")
       @@glade['btn_clock'].sensitive = true
     end
@@ -361,5 +365,20 @@ class Simulador
     if (@thread_proc != nil )
       @thread_proc.kill
     end
+  end
+
+  def Simulador.testar()
+    dados = Arquivo.read(@@file)
+    dados.each do |e|
+      line = e.split(':')
+      value = Simulador.get_value_grid('mem',line[0])
+      if (value != line[1])
+        puts "valor incorreto na posicao de memoria #{line[0]}"
+        puts "valor esperado: #{line[1]}; valor encontrado: #{value}"
+        return false
+      end
+    end
+    puts "memoria correta"
+    return true
   end
 end
