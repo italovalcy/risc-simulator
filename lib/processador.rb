@@ -29,7 +29,7 @@ class Processador
       run()
       save()
     end
-    Simulador.testar
+    Simulador.testaMemoria
   end
 
   def set_ip(value)

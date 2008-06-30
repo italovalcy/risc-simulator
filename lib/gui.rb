@@ -336,7 +336,6 @@ class Simulador
 
 
   def iniciar_simulacao
-    puts "================Iniciando simuladacao===================="
     if (@@glade['clock_type'].active_text == "Manual")
       @@glade['btn_clock'].sensitive = true
     end
@@ -367,7 +366,7 @@ class Simulador
     end
   end
 
-  def Simulador.testar()
+  def Simulador.testaMemoria
     dados = Arquivo.read(@@file)
     dados.each do |e|
       line = e.split(':')
