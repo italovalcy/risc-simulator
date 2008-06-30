@@ -29,6 +29,7 @@ class Barramento
     end
     Simulador.set_value_bus(type,"data",value)
     Simulador.set_value_bus(type,"con","0")
+    Simulador.get_clock
     return value
   end
 

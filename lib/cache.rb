@@ -58,14 +58,14 @@ class Cache
         if ( Simulador.get_type_update_cache == 0 ) # Write back
           write_back_mem_n_set(address,pos,2)
         end
-        load_cache_with_mem_n_set(address,pos,2)
+        load_cache_with_mem_n_set(address,2)
         return Simulador.get_block_cache(pos.to_s)[1]
       when 3 #mapeamento 4-set
         pos = address.to_i % (Simulador.get_cache_size / 4)
         if ( Simulador.get_type_update_cache == 0 ) # Write back
           write_back_mem_n_set(address,pos,4)
         end
-        load_cache_with_mem_n_set(address,pos,4)
+        load_cache_with_mem_n_set(address,4)
         return Simulador.get_block_cache(pos.to_s)[1]
     end
   end
@@ -187,7 +187,7 @@ class Cache
   
   def fetch_value_n_set(address,n)
     pos = address.to_i % (Simulador.get_cache_size / n)
-    for i in pos..pos+(n-1)
+    for i in pos..(pos + (Simulador.get_cache_size / n) - 1)
       block = Simulador.get_block_cache(i.to_s)
       if (block[0].to_i == address.to_i)
         return block[1]
@@ -261,12 +261,13 @@ class Cache
     end
   end
 
-  def write_back_mem_n_set(address,pos,n)
+  def write_back_mem_n_set(address,position,n)
     cont = 0
     addr_to_send = ''
     data_to_send = ''
-    for i in pos..pos+(n-1)
-      block = Simulador.get_block_cache(i)
+    for i in 0..3
+      pos = (position + i) % (Simulador.get_cache_size / n)
+      block = Simulador.get_block_cache(pos)
       if (block[0] != "-1")
         if (cont == 0)
           addr_to_send = block[0]
@@ -394,11 +395,11 @@ class Cache
     end
   end
   
-  def load_cache_with_mem_n_set(address,pos,n)
+  def load_cache_with_mem_n_set(address,n)
     cont = 0
     i = 0
     addr_to_get = -1
-    while (i < Simulador.get_mem_size and i < n)
+    while (i < Simulador.get_mem_size and i < 4)
       if (cont == 0)
         addr_to_get = address.to_i + i
         cont = 1
@@ -408,19 +409,19 @@ class Cache
         value1 = value/256
         b.push(addr_to_get)
         b.push(value1)
+        pos = b[0].to_i % (Simulador.get_cache_size / n)
         Simulador.set_block_cache(pos, b)
-        pos += 1
         b.clear
         b.push(addr_to_get + 1)
         b.push(value - value1*256)
+        pos = b[0].to_i % (Simulador.get_cache_size / n)
         Simulador.set_block_cache(pos, b)
-        pos += 1
         b.clear
         cont = 0
       end
       i += 1
     end
-    while (i < n)
+    while (i < 4)
       if (cont == 0)
         addr_to_get = i
         cont = 1
@@ -429,13 +430,13 @@ class Cache
         value = Barramento.read('mem',addr_to_get,2).to_i
         b.push(addr_to_get)
         b.push(value/256)
+        pos = b[0].to_i % (Simulador.get_cache_size / n)
         Simulador.set_block_cache(pos, b)
-        pos += 1
         b.clear
         b.push(addr_to_get + 1)
         b.push(value - value1*256)
+        pos = b[0].to_i % (Simulador.get_cache_size / n)
         Simulador.set_block_cache(pos, b)
-        pos += 1
         b.clear
         cont = 0
       end
