@@ -118,7 +118,7 @@ class Simulador
 
   def initializa_configs
     # Configura valores defaults
-    @@glade['clock_type'].active = 0
+    @@glade['clock_type'].active = 1
     @@glade['cache_size'].active = 0
     @@glade['cache_mapeamento'].active = 1
     @@glade['cache_atualizacao'].active = 0
@@ -154,11 +154,13 @@ class Simulador
   #   file_dialog - Dialog que foi usado para carregar o arquivo
   #   name_view - TreeView que sera usada para armazenar os valores do arquivo
   def carregar_arq(file_dialog, name_view)
+    if (name_view == 'mem')
+      clear_memoria
+    else
+      clear_io
+    end
     if (file_dialog.filename == "")
       return false
-    end
-    if (name_view == 'mem')
-      @@file = file_dialog.filename
     end
     dados = Arquivo.read(file_dialog.filename)
     dados.each do |e|
@@ -178,6 +180,22 @@ class Simulador
       iter = list.get_iter(i.to_s)
       iter[1] = "-1"
       iter[2] = "0"
+    end
+  end
+  
+  def clear_memoria
+    list = @@glade['gridview_mem'].model
+    for i in 0..@@tam_mem -1
+      iter = list.get_iter(i.to_s)
+      iter[1] = "0"
+    end
+  end
+  
+  def clear_io
+    list = @@glade['gridview_io'].model
+    for i in 0..@@tam_io -1
+      iter = list.get_iter(i.to_s)
+      iter[1] = "0"
     end
   end
 
@@ -237,6 +255,9 @@ class Simulador
     @@count_clock = 0
     @@glade['statusbar'].push(1,"Pulsos de clock: 0")
     clear_cache()
+    Simulador.finaliza_interrupcao('hd')
+    Simulador.finaliza_interrupcao('net')
+    Simulador.finaliza_interrupcao('key')
   end
   
   def event_input_hd
@@ -350,21 +371,6 @@ class Simulador
     end
     @@count_clock += 1
     @@glade['statusbar'].push(1,"Pulsos de clock: #{@@count_clock}")
-  end
-
-  def Simulador.testaMemoria
-    dados = Arquivo.read(@@file)
-    dados.each do |e|
-      line = e.split(':')
-      value = Simulador.get_value_grid('mem',line[0])
-      if (value != line[1])
-        puts "valor incorreto na posicao de memoria #{line[0]}"
-        puts "valor esperado: #{line[1]}; valor encontrado: #{value}"
-        return false
-      end
-    end
-    puts "memoria correta"
-    return true
   end
 
   def Simulador.confirma_interrupcao(type)

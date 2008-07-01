@@ -15,7 +15,7 @@ class Processador
     @result_op = 0   # decimal
     @count_clock = 0
     @cache = Cache.new
-    @@pilha          # Pilha de interrupcoes
+    @@fila = []     # Pilha de interrupcoes
   end
 
   def Processador.pause
@@ -24,26 +24,43 @@ class Processador
   
   def start
     while (not @had_hlt_instruction)
+      puts "busca instrução"
       fetch_next_instruction()
       decode_instruction()
       fetch_operatings()
       run()
       save()
-
-      # Implementando interrupção
-      if (!pilha.empty)
-        salva_contexto
-        while(!pilha.empty)
-          # - desempilha a interrupcao i
-          # - Enviar sinal para a gui sobre a interrupção i
-          # - Sinalizar na gui que a interrupção está sendo tratada (colocar msg na ula)
-          # - Aguardar dois pulsos de clock
-          # - Enviar sinal para a gui que finalizou a execucao da interrupção i
-        end
-        recupera_contexto
-      end
+      trata_interrupcao()
     end
-    Simulador.testaMemoria
+  end
+
+  # Implementando interrupção
+  def trata_interrupcao
+    if (not @@fila.empty?)
+      hash = {'hd'=>"do Disco Rígido", 'key'=> "do Teclado", 'net'=>"da Rede"}
+      Simulador.get_clock
+      Simulador.set_log_ula("Salva contexto atual...")
+      salva_contexto
+      while(not @@fila.empty?)
+        # - desemfileira a interrupcao i
+        sinal = @@fila.first
+        @@fila.delete_at(0)
+        # - Enviar sinal para a gui sobre a interrupção i
+        Simulador.confirma_interrupcao(sinal)
+        # - Sinalizar na gui que a interrupção está sendo tratada (coloca msg na ula)
+        Simulador.set_log_ula("Tratando interrupção\n#{hash[sinal]}...")
+        Simulador.get_clock
+        # - Chamando função que trata da interrupção
+        Simulador.set_log_ula("Chamando função que\ntrata interrupção\n#{hash[sinal]}...")
+        Simulador.get_clock
+        # - Enviar sinal para a gui que finalizou a execucao da interrupção i
+        Simulador.set_log_ula("Finalizando tratamento\n da interrupção...")
+        Simulador.finaliza_interrupcao(sinal)
+      end
+      Simulador.set_log_ula("Restaurando contexto\nde execução...")
+      recupera_contexto
+      puts "contexto restaurado"
+    end
   end
 
   def set_ip(value)
@@ -268,12 +285,37 @@ class Processador
   end
 
   def Processador.recebe_interrupcao(sinal)
-    # - Guarda o sinal na pilha
+    # Guarda o sinal na fila
+    @@fila.push(sinal)
   end
 
+  # Salva na pilha do processador o estado atual
+  # dos registradores. Sabendo que essa pilha 
+  # esta nas ultimas 20 posições da memória,
+  # armazenamos os registradores na seguinte ordem:
+  # 0 - Ax    4 - IP
+  # 1 - Bx    5 - RI
+  # 2 - Cx    6 - Flags
+  # 3 - Dx
   def salva_contexto
+    tam_mem = Simulador.get_mem_size.to_i
+    rg = ['ax','bx','cx','dx','ip','ri','flags']
+    for i in 1..7
+      value = convert_to_bin(Simulador.get_value_rg(rg[i-1]),16)
+      value1 = value[0..7].to_i(2)
+      value2 = value[8..15].to_i(2)
+      @cache.set_value(tam_mem - 2*i, value1)
+      @cache.set_value(tam_mem - 2*i + 1, value2)
+    end
   end
 
   def recupera_contexto
+    tam_mem = Simulador.get_mem_size.to_i
+    rg = ['ax','bx','cx','dx','ip','ri','flags']
+    for i in 1..7
+      puts "buscando #{rg[i-1]} no end #{tam_mem - 2*i}..."
+      Simulador.set_value_rg(rg[i-1], @cache.get_value(tam_mem - 2*i,2))
+      puts "done"
+    end
   end
 end

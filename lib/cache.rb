@@ -29,6 +29,7 @@ class Cache
   
   # Armazena o valor de value no cache no endereco address
   def set_value(address, value)
+    address = address.to_i
     case (Simulador.get_type_mapping)
       when 0 #mapeamento direto
         set_value_directmap(address,value)
@@ -93,14 +94,14 @@ class Cache
     b.push(value)
     pos = address % Simulador.get_cache_size
     if ( Simulador.get_type_update_cache == 0 ) # Write back
-      old_block = Simulador.get_block_cache(pos)[0]
+      old_block = Simulador.get_block_cache(pos)
       if (old_block[0]!=address.to_s && old_block[0]!="-1")
-        Barramento.write('mem',block[0],block[1])
+        Barramento.write('mem',old_block[0],old_block[1],1)
       end
       Simulador.set_block_cache(pos,b)
     else # Write Througt
       Simulador.set_block_cache(pos,b)
-      Barramento.write('mem',address,value)
+      Barramento.write('mem',address,value,1)
     end
   end
 
@@ -120,14 +121,14 @@ class Cache
       pos =  (rand*100).to_i % Simulador.get_cache_size
     end
     if ( Simulador.get_type_update_cache == 0 ) # Write back
-      old_block = Simulador.get_block_cache(pos)[0]
+      old_block = Simulador.get_block_cache(pos)
       if (old_block[0]!=address.to_s && old_block[0]!="-1")
-        Barramento.write('mem',block[0],block[1])
+        Barramento.write('mem',old_block[0],old_block[1],1)
       end
       Simulador.set_block_cache(pos,b)
     else # Write Througt
       Simulador.set_block_cache(pos,b)
-      Barramento.write('mem',address,value)
+      Barramento.write('mem',address,value,1)
     end
   end
   
@@ -145,14 +146,14 @@ class Cache
       end
     end
     if ( Simulador.get_type_update_cache == 0 ) # Write back
-      old_block = Simulador.get_block_cache(pos)[0]
+      old_block = Simulador.get_block_cache(pos)
       if (old_block[0]!=address.to_s && old_block[0]!="-1")
-        Barramento.write('mem',block[0],block[1])
+        Barramento.write('mem',old_block[0],old_block[1],1)
       end
       Simulador.set_block_cache(pos,b)
     else # Write Througt
       Simulador.set_block_cache(pos,b)
-      Barramento.write('mem',address,value)
+      Barramento.write('mem',address,value,1)
     end
   end
 
