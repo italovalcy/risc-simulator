@@ -122,22 +122,19 @@ class Processador
           when "01" # Register
             log_op1 = "Op1: #{cod_reg[@id_op1]}"
           when "11" # Memory
-            address = get_ip(1)
-            @id_op1 = @cache.get_value(address,1).to_i
-            log_op1 = "Op1: [#{@id_op1}]"
+            log_op1 = "Op1: [#{cod_reg[@id_op1]}]"
         end
         case @t_op2
-          when "01" # Register
+          when '01' # Register
             @value_op2 = Simulador.get_value_rg(cod_reg[@id_op2]).to_i
             log_op2 = "Op2: #{cod_reg[@id_op2]}"
           when '10' # Value
             @value_op2 = @cache.get_value(get_ip(1),1).to_i
             log_op2 = "Op2: #{@value_op2}"
           when '11'  # Memory
-            address = get_ip(1)
-            @id_op2 = @cache.get_value(address,1).to_i
-            @value_op2 = @cache.get_value(@id_op2,1).to_i
-            log_op2 = "Op2: [#{@id_op2}]"
+            address = Simulador.get_value_rg(cod_reg[@id_op2])
+            @value_op2 = @cache.get_value(address,1).to_i
+            log_op2 = "Op2: [#{address}]"
         end
       when '0010', '0011', '1100', '1101', '1110'  # ADD, SUB, AND, OR, CMP
         @value_op1 = Simulador.get_value_rg(cod_reg[@id_op1]).to_i
@@ -251,8 +248,9 @@ class Processador
             Simulador.set_log_ula("Salvou:\n"+
                                   "#{cod_reg[@id_op1]} <- result_tmp (#{@result_op})")
           when '11' # Memory
-            @cache.set_value(@id_op1,@result_op)
-            Simulador.set_log_ula("Salvou:\n [#{@id_op1}] <- result_tmp (#{@result_op})")
+            address = Simulador.get_value_rg(cod_reg[@id_op1])
+            @cache.set_value(address,@result_op)
+            Simulador.set_log_ula("Salvou:\n [#{address}] <- result_tmp (#{@result_op})")
         end
       when '0010', '0011', '0100', '0101', '1100', '1101' # ADD, SUB, INC, DEC, AND, OR
         Simulador.get_clock()

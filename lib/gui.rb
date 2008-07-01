@@ -5,7 +5,7 @@ require 'processador'
 
 class Simulador
   def initialize()
-    @@tam_mem = 64
+    @@tam_mem = 256
     @@tam_cache = 16
     @@tam_io = 64
     @@tam_pilha_exec = 20
