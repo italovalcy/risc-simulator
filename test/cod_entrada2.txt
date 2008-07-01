@@ -1,0 +1,16 @@
+MOV Ax, 0
+MOV Bx, 100
+IN [Cx], Ax
+MOV [Bx], Cx
+MOV Dx, 240
+AND Cx, Dx
+INC Bx
+INC Ax
+CMP Cx, Dx
+MOV Dx, 31
+JE Dx
+MOV Dx,6 (esse 6 representa a linha 3 deste arquivo)
+JMP Dx
+MOV Bx, 100
+JMP Bx
+HLT

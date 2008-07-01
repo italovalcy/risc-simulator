@@ -196,7 +196,7 @@ class Cache
     addr_to_send = ''
     data_to_send = ''
     for i in 0..3
-      pos = address % Simulador.get_cache_size
+      pos = (address + i) % Simulador.get_cache_size
       block = Simulador.get_block_cache(pos)
       if (block[0] != "-1")
         if (cont == 0)
@@ -204,9 +204,16 @@ class Cache
           data_to_send = block[1]
           cont = 1
         elsif (cont == 1)
-          data_to_send = str_concat(data_to_send, block[1])
-          Barramento.write('mem',addr_to_send,data_to_send,2)
-          cont = 0
+          if (block[0].to_i == addr_to_send.to_i + 1)
+            data_to_send = str_concat(data_to_send, block[1])
+            Barramento.write('mem',addr_to_send,data_to_send,2)
+            cont = 0
+          else
+            Barramento.write('mem',addr_to_send,data_to_send,1)
+            addr_to_send = block[0]
+            data_to_send = block[1]
+            cont = 1
+          end
         end
       else
         if (cont == 1)
