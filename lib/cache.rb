@@ -295,7 +295,7 @@ class Cache
     cont = 0
     i = 0
     addr_to_get = -1
-    while (i < Simulador.get_mem_size and i < 4)
+    while (address + i < Simulador.get_mem_size and i < @qtd_to_update)
       if (cont == 0)
         addr_to_get = address + i
         cont = 1
@@ -317,15 +317,25 @@ class Cache
       end
       i += 1
     end
-    while (i < 4)
+    if (cont == 1)
+      b = []
+      value = Barramento.read('mem',addr_to_get,1).to_i
+      b.push(addr_to_get)
+      b.push(value)
+      pos = addr_to_get % Simulador.get_cache_size
+      Simulador.set_block_cache(pos, b)
+      cont = 0
+    end
+    while (i < @qtd_to_update)
       if (cont == 0)
-        addr_to_get = i
+        addr_to_get = (address + i) % Simulador.get_mem_size
         cont = 1
       elsif (cont == 1)
         b = []
         value = Barramento.read('mem',addr_to_get,2).to_i
+        value1 = value/256
         b.push(addr_to_get)
-        b.push(value/256)
+        b.push(value1)
         pos = addr_to_get % Simulador.get_cache_size
         Simulador.set_block_cache(pos, b)
         b.clear
@@ -344,7 +354,7 @@ class Cache
     cont = 0
     i = 0
     addr_to_get = -1
-    while (i < Simulador.get_mem_size and i < 4)
+    while (address + i < Simulador.get_mem_size and i < @qtd_to_update)
       if (cont == 0)
         addr_to_get = address + i
         cont = 1
@@ -366,15 +376,25 @@ class Cache
       end
       i += 1
     end
-    while (i < 4)
+    if (cont == 1)
+      b = []
+      value = Barramento.read('mem',addr_to_get,1).to_i
+      b.push(addr_to_get)
+      b.push(value)
+      Simulador.set_block_cache(pos % Simulador.get_cache_size, b)
+      pos += 1
+      cont = 0
+    end
+    while (i < @qtd_to_update)
       if (cont == 0)
-        addr_to_get = i
+        addr_to_get = (address + i) % Simulador.get_mem_size
         cont = 1
       elsif (cont == 1)
         b = []
         value = Barramento.read('mem',addr_to_get,2).to_i
+        value1 = value/256
         b.push(addr_to_get)
-        b.push(value/256)
+        b.push(value1)
         Simulador.set_block_cache(pos % Simulador.get_cache_size, b)
         pos += 1
         b.clear
@@ -393,7 +413,7 @@ class Cache
     cont = 0
     i = 0
     addr_to_get = -1
-    while (i < Simulador.get_mem_size and i < @qtd_to_update)
+    while (address + i < Simulador.get_mem_size and i < @qtd_to_update)
       if (cont == 0)
         addr_to_get = address + i
         cont = 1
@@ -413,9 +433,17 @@ class Cache
       end
       i += 1
     end
+    if (cont == 1)
+      b = []
+      value = Barramento.read('mem',addr_to_get,1).to_i
+      b.push(addr_to_get)
+      b.push(value)
+      Simulador.set_block_cache(vet_pos[i - 1], b)
+      cont = 0
+    end
     while (i < @qtd_to_update)
       if (cont == 0)
-        addr_to_get = i
+        addr_to_get = (address + i) % Simulador.get_mem_size
         cont = 1
       elsif (cont == 1)
         b = []

@@ -134,6 +134,10 @@ class Simulador
     @@glade['sinal_hd'].stock = Gtk::Stock::INFO
     @@glade['sinal_net'].stock = Gtk::Stock::INFO
     @@glade['sinal_key'].stock = Gtk::Stock::INFO
+    # Desabilita alguns botões
+    @@glade['btn_input_hd'].sensitive = false
+    @@glade['btn_input_net'].sensitive = false
+    @@glade['btn_input_key'].sensitive = false
   end
 
   def initialize_registers()
@@ -255,9 +259,9 @@ class Simulador
     @@count_clock = 0
     @@glade['statusbar'].push(1,"Pulsos de clock: 0")
     clear_cache()
-    Simulador.finaliza_interrupcao('hd')
-    Simulador.finaliza_interrupcao('net')
-    Simulador.finaliza_interrupcao('key')
+    @@glade["sinal_hd"].stock = Gtk::Stock::INFO
+    @@glade["sinal_net"].stock = Gtk::Stock::INFO
+    @@glade["sinal_key"].stock = Gtk::Stock::INFO
   end
   
   def event_input_hd
@@ -394,6 +398,10 @@ class Simulador
     @@glade['mem_config'].sensitive = false
     @@glade['io_config'].sensitive = false
     @@glade['editar_pref'].sensitive = false
+    # Habilita alguns botões
+    @@glade['btn_input_hd'].sensitive = true
+    @@glade['btn_input_net'].sensitive = true
+    @@glade['btn_input_key'].sensitive = true
     event_clear()
     @thread_proc = Thread.new do
       p = Processador.new
@@ -410,6 +418,10 @@ class Simulador
     @@glade['editar_pref'].sensitive = true
     @@glade['btn_stop'].sensitive = false
     @@glade['btn_clock'].sensitive = false
+    # Desabilita alguns botões
+    @@glade['btn_input_hd'].sensitive = false
+    @@glade['btn_input_net'].sensitive = false
+    @@glade['btn_input_key'].sensitive = false
     if (@thread_proc != nil )
       @thread_proc.kill
     end

@@ -24,7 +24,6 @@ class Processador
   
   def start
     while (not @had_hlt_instruction)
-      puts "busca instrução"
       fetch_next_instruction()
       decode_instruction()
       fetch_operatings()
@@ -59,7 +58,6 @@ class Processador
       end
       Simulador.set_log_ula("Restaurando contexto\nde execução...")
       recupera_contexto
-      puts "contexto restaurado"
     end
   end
 
@@ -313,9 +311,7 @@ class Processador
     tam_mem = Simulador.get_mem_size.to_i
     rg = ['ax','bx','cx','dx','ip','ri','flags']
     for i in 1..7
-      puts "buscando #{rg[i-1]} no end #{tam_mem - 2*i}..."
       Simulador.set_value_rg(rg[i-1], @cache.get_value(tam_mem - 2*i,2))
-      puts "done"
     end
   end
 end
