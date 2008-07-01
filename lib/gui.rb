@@ -8,8 +8,9 @@ class Simulador
     @@tam_mem = 64
     @@tam_cache = 16
     @@tam_io = 64
-    @thread_proc = nil
+    @@tam_pilha_exec = 20
     @@count_clock = 0
+    @thread_proc = nil
     # t_config define onde serao aplicadas
     # as configuracoes que um determinado arquivo
     # traz. Seus valores possíveis são: 'mem', 'io'
@@ -130,6 +131,9 @@ class Simulador
     @@glade['txt_ula'].buffer = buffer
     @@glade['txt_ula'].editable = false
     @@glade['statusbar'].push(1,"Pulsos de clock: 0")
+    @@glade['sinal_hd'].stock = Gtk::Stock::INFO
+    @@glade['sinal_net'].stock = Gtk::Stock::INFO
+    @@glade['sinal_key'].stock = Gtk::Stock::INFO
   end
 
   def initialize_registers()
@@ -159,6 +163,10 @@ class Simulador
     dados = Arquivo.read(file_dialog.filename)
     dados.each do |e|
       line = e.split(':')
+      if (line[0].to_i >= @@tam_mem - @@tam_pilha_exec)
+        @@glade['erro_mem'].show
+        return false
+      end
       Simulador.set_value_grid(name_view,line[0],line[1])
     end
     return true
@@ -198,6 +206,7 @@ class Simulador
     @@glade['sobre_dialog'].signal_connect("delete_event") { @@glade['sobre_dialog'].hide }
     @@glade['sobre_dialog'].signal_connect("response") { |s,r| if (r==Gtk::Dialog::RESPONSE_CANCEL); s.hide; end }
     @@glade['pref_dialog'].signal_connect("delete_event") { @@glade['pref_dialog'].hide }
+    @@glade['fechar_erro_mem'].signal_connect("clicked") { @@glade['erro_mem'].hide }
     @@glade['btn_fechar_pref'].signal_connect("clicked") { event_fechar_pref() }
     @@glade['abrir_arq'].signal_connect("delete_event") { @@glade['abrir_arq'].hide; @t_config = '' }
     @@glade['btn_cancel_arq'].signal_connect("clicked") { @@glade['abrir_arq'].hide; @t_config = '' }
@@ -231,15 +240,21 @@ class Simulador
   end
   
   def event_input_hd
-    puts "Evento gerado pelo HD..."
+    @@glade['sinal_hd'].stock = Gtk::Stock::NO
+    @@glade['btn_input_hd'].sensitive = false
+    Processador.recebe_interrupcao('hd')
   end
 
   def event_input_net
-    puts "Evento gerando pela Rede..."
+    @@glade['sinal_net'].stock = Gtk::Stock::NO
+    @@glade['btn_input_net'].sensitive = false
+    Processador.recebe_interrupcao('net')
   end
 
   def event_input_key
-    puts "Evento gerando pelo Teclado..."
+    @@glade['sinal_key'].stock = Gtk::Stock::NO
+    @@glade['btn_input_key'].sensitive = false
+    Processador.recebe_interrupcao('key')
   end
 
 
@@ -319,6 +334,10 @@ class Simulador
     return @@tam_mem
   end
 
+  def Simulador.get_pilha_size
+    return @@tam_pilha_exec
+  end
+
   def Simulador.cache_habilitado
     return @@glade['cache_habilitado'].active?
   end
@@ -331,6 +350,30 @@ class Simulador
     end
     @@count_clock += 1
     @@glade['statusbar'].push(1,"Pulsos de clock: #{@@count_clock}")
+  end
+
+  def Simulador.testaMemoria
+    dados = Arquivo.read(@@file)
+    dados.each do |e|
+      line = e.split(':')
+      value = Simulador.get_value_grid('mem',line[0])
+      if (value != line[1])
+        puts "valor incorreto na posicao de memoria #{line[0]}"
+        puts "valor esperado: #{line[1]}; valor encontrado: #{value}"
+        return false
+      end
+    end
+    puts "memoria correta"
+    return true
+  end
+
+  def Simulador.confirma_interrupcao(type)
+    @@glade["sinal_#{type}"].stock = Gtk::Stock::YES
+  end
+
+  def Simulador.finaliza_interrupcao(type)
+    @@glade["btn_input_#{type}"].sensitive = true
+    @@glade["sinal_#{type}"].stock = Gtk::Stock::INFO
   end
 
 
@@ -364,20 +407,5 @@ class Simulador
     if (@thread_proc != nil )
       @thread_proc.kill
     end
-  end
-
-  def Simulador.testaMemoria
-    dados = Arquivo.read(@@file)
-    dados.each do |e|
-      line = e.split(':')
-      value = Simulador.get_value_grid('mem',line[0])
-      if (value != line[1])
-        puts "valor incorreto na posicao de memoria #{line[0]}"
-        puts "valor esperado: #{line[1]}; valor encontrado: #{value}"
-        return false
-      end
-    end
-    puts "memoria correta"
-    return true
   end
 end

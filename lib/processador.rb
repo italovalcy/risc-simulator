@@ -15,6 +15,7 @@ class Processador
     @result_op = 0   # decimal
     @count_clock = 0
     @cache = Cache.new
+    @@pilha          # Pilha de interrupcoes
   end
 
   def Processador.pause
@@ -28,6 +29,19 @@ class Processador
       fetch_operatings()
       run()
       save()
+
+      # Implementando interrupção
+      if (!pilha.empty)
+        salva_contexto
+        while(!pilha.empty)
+          # - desempilha a interrupcao i
+          # - Enviar sinal para a gui sobre a interrupção i
+          # - Sinalizar na gui que a interrupção está sendo tratada (colocar msg na ula)
+          # - Aguardar dois pulsos de clock
+          # - Enviar sinal para a gui que finalizou a execucao da interrupção i
+        end
+        recupera_contexto
+      end
     end
     Simulador.testaMemoria
   end
@@ -251,5 +265,15 @@ class Processador
       when '1111' # HLT
         # Nada a ser feito
     end
+  end
+
+  def Processador.recebe_interrupcao(sinal)
+    # - Guarda o sinal na pilha
+  end
+
+  def salva_contexto
+  end
+
+  def recupera_contexto
   end
 end

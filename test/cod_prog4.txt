@@ -1,0 +1,19 @@
+MOV Ax,0
+MOV [20],Ax
+MOV Bx,4
+MOV [21],Bx
+MOV Cx,8
+MOV [22],Cx
+MOV Dx,16
+MOV [23],Dx
+OUT Ax, Bx
+INC Ax
+OUT Ax, Cx
+INC Ax
+OUT Ax, Dx
+IN  Bx, Ax
+DEC Ax
+IN  Cx, Ax
+DEC Ax
+IN  Dx, Ax
+HLT
