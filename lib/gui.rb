@@ -17,7 +17,8 @@ class Simulador
     @t_config = ''
 
     Gtk.init
-    @@glade = GladeXML.new('layout.glade', nil, 'simulador')  
+    @@glade = GladeXML.new(File.dirname(__FILE__) + '/layout.glade', 
+                           nil, 'simulador')  
     window = @@glade['simulador_window']
     initializa_configs()
     make_cache(@@tam_cache)

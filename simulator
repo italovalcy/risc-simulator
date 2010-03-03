@@ -1,3 +1,7 @@
+#!/usr/bin/ruby
+
+$:.unshift './lib'
+
 require 'gui'
 
 simulador = Simulador.new
