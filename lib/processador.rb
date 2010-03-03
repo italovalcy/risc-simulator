@@ -4,7 +4,7 @@ require 'cache'
 
 class Processador
   def initialize
-    @had_hlt_instruction = false
+    @@had_hlt_instruction = false
     @op_code = ''
     @t_op1 = ''
     @t_op2 = ''
@@ -21,9 +21,13 @@ class Processador
   def Processador.pause
     Thread.stop
   end
+
+  def Processador.halted?
+    @@had_hlt_instruction
+  end
   
   def start
-    while (not @had_hlt_instruction)
+    while (not @@had_hlt_instruction)
       fetch_next_instruction()
       decode_instruction()
       fetch_operatings()
@@ -227,7 +231,7 @@ class Processador
         @result_op = flags.to_i(2)
         log_run = "result_tmp = #{@value_op1} CMP #{@value_op2}"
       when '1111' # HLT
-        @had_hlt_instruction = true
+        @@had_hlt_instruction = true
         log_run = "HLT"
     end
     if (@op_code != '0110')

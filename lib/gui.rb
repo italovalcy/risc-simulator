@@ -119,14 +119,14 @@ class Simulador
 
   def initializa_configs
     # Configura valores defaults
-    @@glade['clock_type'].active = 1
+    @@glade['clock_type'].active = 0
     @@glade['cache_size'].active = 0
     @@glade['cache_mapeamento'].active = 1
-    @@glade['cache_atualizacao'].active = 0
+    @@glade['cache_atualizacao'].active = 1 # write through
     @@glade['cache_habilitado'].active = true
     @@glade['io_size'].value = @@tam_io
     @@glade['mem_size'].value = @@tam_mem
-    @@glade['sleep_clock'].value = 1
+    @@glade['sleep_clock'].value = 100
     buffer = Gtk::TextBuffer.new
     buffer.text = ""
     @@glade['txt_ula'].buffer = buffer
@@ -369,11 +369,7 @@ class Simulador
   end
 
   def Simulador.get_clock
-    if (@@glade['clock_type'].active_text == "Automatico")
-      sleep @@glade['sleep_clock'].text.to_i
-    else
-      Processador.pause
-    end
+    Processador.pause
     @@count_clock += 1
     @@glade['statusbar'].push(1,"Pulsos de clock: #{@@count_clock}")
   end
@@ -404,6 +400,11 @@ class Simulador
     @@glade['btn_input_net'].sensitive = true
     @@glade['btn_input_key'].sensitive = true
     event_clear()
+
+    if (@@glade['clock_type'].active_text == "Automatico")
+      @timer = Gtk.timeout_add(@@glade['sleep_clock'].value.to_i) { made_clock() if !Processador.halted?; !Processador.halted?  }
+    end
+
     @thread_proc = Thread.new do
       p = Processador.new
       p.start
@@ -423,6 +424,7 @@ class Simulador
     @@glade['btn_input_hd'].sensitive = false
     @@glade['btn_input_net'].sensitive = false
     @@glade['btn_input_key'].sensitive = false
+    Gtk.timeout_remove(@timer)
     if (@thread_proc != nil )
       @thread_proc.kill
     end
