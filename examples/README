@@ -1,3 +1,10 @@
 ---+ Testes
 
-Para cada arquivo contendo testes com valores de programas que povoam a memoria, existe um arquivo com o mesmo código em assembler.
+Para cada arquivo contendo testes com valores de programas que povoam a memoria,
+existe um arquivo com o mesmo código em assembler. Exemplo:
+
+ - cod_XXXX.txt: arquivo com o codigo assembler
+ - XXXX_mem.config: arquivo com as configuracoes que devem ser carregas na 
+   memoria do simulador
+ - XXXX_io.config: arquivo com as configuracoes que devem ser carregas no 
+   dispositivo de IO do simulador
