@@ -3,11 +3,11 @@ MOV Dx, 1
 IN Ax, Cx
 IN Bx, Dx
 CMP Ax, Bx
-MOV Dx, 11
+MOV Dx, 26
 JL Dx
 INC Cx
 SUB Ax, Bx
-MOV Dx, 4
+MOV Dx, 10
 JMP Dx
 MOV Dx, 3
 OUT Dx, Cx
